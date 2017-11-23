@@ -78,5 +78,8 @@ add_subdirectory(3rdparty)
 # Then add Ophidian
 add_subdirectory(ophidian)
 
+# Then add Experiments
+add_subdirectory(experiments)
+
 # Then add test
 add_subdirectory(test)

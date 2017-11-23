@@ -3782,6 +3782,10 @@ namespace Catch {
         std::vector<std::string> reporterNames;
         std::vector<std::string> testsOrTags;
         std::vector<std::string> sectionsToRun;
+
+        //OPHIDIAN
+        std::string circuit;
+        std::string outputFilenameExperiments;
     };
 
     class Config : public SharedImpl<IConfig> {
@@ -5095,6 +5099,16 @@ namespace Catch {
         cli["--use-colour"]
             .describe( "should output be colourised" )
             .bind( &setUseColour, "yes|no" );
+
+//COMMANDS OPHIDIAN
+
+        cli["--ckt"]
+            .describe( "how circuit?" )
+            .bind( &ConfigData::circuit, "circuiot"  );
+
+        cli["--oExp"]
+            .describe( "File for experiments results" )
+            .bind( &ConfigData::outputFilenameExperiments, "out experiments" );
 
         return cli;
     }
@@ -6847,7 +6861,7 @@ namespace Catch {
             }
         }
 
-        Clara::CommandLine<ConfigData> const& cli() const {
+        Clara::CommandLine<ConfigData> const& cli() const{
             return m_cli;
         }
         std::vector<Clara::Parser::Token> const& unusedTokens() const {

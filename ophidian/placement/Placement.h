@@ -33,6 +33,7 @@ namespace placement
 class Placement
 {
 public:
+    using CellLocationIterator = entity_system::Property<circuit::Cell, util::LocationDbu>::ContainerType::const_iterator;
 	//! Placement Constructor
 	/*!
        \brief Constructs a placement system with no properties.
@@ -64,13 +65,22 @@ public:
         return mCellLocations[cell];
 	}
 
-void placeInputPad(const circuit::Input & input, const util::LocationDbu & location);
+    void placeInputPad(const circuit::Input & input, const util::LocationDbu & location);
 
     util::LocationDbu inputPadLocation(const circuit::Input & input) const;
 
     void placeOutputPad(const circuit::Output & output, const util::LocationDbu &location);
 
     util::LocationDbu outputPadLocation(const circuit::Output & output) const;
+
+    //! Rows iterator
+    /*!
+       \return Range iterator for the Cells Locations.
+     */
+    ophidian::util::Range<CellLocationIterator> cellLocationRange() const
+    {
+        return util::Range<CellLocationIterator>(mCellLocations.begin(), mCellLocations.end());
+    }
 
 private:
     entity_system::Property<circuit::Cell, util::LocationDbu> mCellLocations;

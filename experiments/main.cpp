@@ -1,11 +1,15 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
+/*extern Catch::Session session;
+   extern Catch::ConfigData configData;
 
-Catch::Session session;
-Catch::ConfigData configData;
+   std::unique_ptr<Experiment> Experiment::instance;
+   std::once_flag Experiment::onceFlag*/;
+#include "experiment.h"
+
 int main( int argc, char* argv[] )
 {
-//    Catch::Session session; // There must be exactly one instance
+    Catch::Session session; // There must be exactly one instance
 
     // writing to session.configData() here sets defaults
     // this is the preferred way to set them
@@ -18,7 +22,11 @@ int main( int argc, char* argv[] )
     // overrides command line args
     // only do this if you know you need to
 
-    configData = session.configData();
+    Catch::ConfigData configData = session.configData();
+    Experiment &exp = Experiment::getInstance();
+
+    exp.setCircuit_name(configData.circuit);
+    exp.setOutput_file(configData.outputFilenameExperiments);
 
     int numFailed = session.run();
 
@@ -29,8 +37,7 @@ int main( int argc, char* argv[] )
 }
 
 
-#include <iostream>
-#include <memory>
+
 
 //#include "experiment.h"
 //#include "metric.h"
@@ -38,12 +45,12 @@ int main( int argc, char* argv[] )
 
 //using namespace ophidian;
 
-//Chip Boundaries
-TEST_CASE("Test all circuits runtime DOD Problem 1", "[problem][1]")
-{
-    std::cout << "problem 1" << std::endl;
+////Chip Boundaries
+//TEST_CASE("Test all circuits runtime DOD Problem 1", "[problem][1]")
+//{
+//    std::cout << "problem 1" << std::endl;
 
-    std::cout << "circuit " << configData.circuit << std::endl;
-    std::cout << "filename " << configData.outputFilenameExperiments << std::endl;
+//    std::cout << "circuit " << configData.circuit << std::endl;
+//    std::cout << "filename " << configData.outputFilenameExperiments << std::endl;
 
-}
+//}

@@ -3,15 +3,20 @@
 
 #include <chrono>
 #include <papi.h>
+#include <string>
+#include <fstream>
 
-class Metric{
+class Metric
+{
 public:
     virtual void start() = 0;
     virtual void end() = 0;
     virtual void print_result() = 0;
+    virtual void print_file_result(std::string filename) = 0;
 };
 
-class Runtime : public Metric{
+class Runtime : public Metric
+{
     std::chrono::high_resolution_clock::time_point time_start, time_end;
 public:
     void start(){
@@ -26,14 +31,23 @@ public:
         auto total_time = time_end - time_start;
         std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count()<<" ms"<<std::endl;
     }
+
+    void print_file_result(std::string filename){
+        auto total_time = time_end - time_start;
+        std::ofstream ofs;
+        ofs.open (filename, std::ofstream::out | std::ofstream::app);
+        ofs << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() << " ms\n";
+        ofs.close();
+    }
 };
 
-class Miss : public Metric{
-     int * PAPI_events;
-     unsigned int events_size;
-     std::vector<long long> events;
+class Miss : public Metric
+{
+    int * PAPI_events;
+    unsigned int events_size;
+    std::vector<long long> events;
 public:
-    Miss(int events[], unsigned int events_size):events_size(events_size){
+    Miss(int events[], unsigned int events_size) : events_size(events_size){
         PAPI_events = events;
     }
 
@@ -51,6 +65,10 @@ public:
         for(auto e : events)
             std::cout<<e<<" ";
         std::cout<<std::endl;
+    }
+
+    void print_file_result(std::string filename){
+
     }
 };
 

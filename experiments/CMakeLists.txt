@@ -25,6 +25,7 @@ add_executable(ophidian_experiments ${ophidian_run_experiments_SRC})
 # Link target dependencies
 target_link_libraries(ophidian_experiments PUBLIC 
     Catch 
+    papi
     ophidian_circuit 
     ophidian_design 
     ophidian_entity_system 

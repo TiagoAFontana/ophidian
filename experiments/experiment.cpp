@@ -2,7 +2,6 @@
 
 /* Null, because instance will be initialized on demand. */
 Experiment* Experiment::instance = 0;
-//std::unique_ptr<Experiment> instance (nullptr);
 
 std::string Experiment::getOutput_file() const
 {
@@ -30,11 +29,8 @@ ExperimentFixtureICCAD2015::ExperimentFixtureICCAD2015()
     std::string defFile = "input_files/"+ Experiment::getInstance().getCircuit_name() + "/" + Experiment::getInstance().getCircuit_name() +".def";
     std::string verilogFile = "input_files/"+ Experiment::getInstance().getCircuit_name() + "/" + Experiment::getInstance().getCircuit_name() +".v";
 
-    ophidian::design::ICCAD2015ContestDesignBuilder ICCAD2015DesignBuilder(lefFile, defFile, verilogFile);
-    design_ = &ICCAD2015DesignBuilder.build();
-
-    int a = 0;
-    a++;
+    mDesignBuilder.reset( new ophidian::design::ICCAD2015ContestDesignBuilder(lefFile, defFile, verilogFile));
+    design_ = &mDesignBuilder->build();
 }
 
 ExperimentFixtureICCAD2017::ExperimentFixtureICCAD2017()
@@ -43,6 +39,6 @@ ExperimentFixtureICCAD2017::ExperimentFixtureICCAD2017()
     std::string tech_lef = "input_files/ICCAD2017/"+ Experiment::getInstance().getCircuit_name() +"/tech.lef";
     std::string input_def = "input_files/ICCAD2017/"+ Experiment::getInstance().getCircuit_name() +"/placed.def";
 
-    ophidian::design::ICCAD2017ContestDesignBuilder ICCAD2017DesignBuilder(cell_lef, tech_lef, input_def);
-    design_ = &ICCAD2017DesignBuilder.build();
+    mDesignBuilder.reset( new ophidian::design::ICCAD2017ContestDesignBuilder(cell_lef, tech_lef, input_def));
+    design_ =  &mDesignBuilder->build();
 }

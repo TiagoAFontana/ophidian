@@ -78,6 +78,8 @@ public:
     ExperimentFixtureICCAD2015();
 
     ophidian::design::Design * design_;
+private:
+    std::unique_ptr<ophidian::design::DesignBuilder> mDesignBuilder;
 };
 
 class ExperimentFixtureICCAD2017
@@ -86,6 +88,8 @@ public:
     ExperimentFixtureICCAD2017();
 
     ophidian::design::Design * design_;
+private:
+    std::unique_ptr<ophidian::design::DesignBuilder> mDesignBuilder;
 };
 
 #endif //ophidian_EXPERIMENT_H

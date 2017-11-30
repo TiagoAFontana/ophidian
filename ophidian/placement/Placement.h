@@ -82,10 +82,17 @@ public:
         return util::Range<CellLocationIterator>(mCellLocations.begin(), mCellLocations.end());
     }
 
+    void fixLocation(const circuit::Cell & cell, bool fixed);
+
+    bool isFixed(const circuit::Cell & cell) const {
+        return mCellFixed[cell];
+    }
+
 private:
     entity_system::Property<circuit::Cell, util::LocationDbu> mCellLocations;
     entity_system::Property<circuit::Input, util::LocationDbu> mInputLocations;
     entity_system::Property<circuit::Output, util::LocationDbu> mOutputLocations;
+    entity_system::Property<circuit::Cell, bool> mCellFixed;
 };
 
 } //namespace placement

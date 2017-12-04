@@ -33,6 +33,11 @@ public:
     }
 
     void print_file_result(std::string filename){
+        if(filename == "")
+        {
+            std::cout << "Output file name error!!" << std::endl;
+            return;
+        }
         auto total_time = time_end - time_start;
         std::ofstream ofs;
         ofs.open (filename, std::ofstream::out | std::ofstream::app);
@@ -68,7 +73,17 @@ public:
     }
 
     void print_file_result(std::string filename){
-
+        if(filename == "")
+        {
+            std::cout << "Output file name error!!" << std::endl;
+            return;
+        }
+        std::ofstream ofs;
+        ofs.open (filename, std::ofstream::out | std::ofstream::app);
+        for(auto e : events)
+            ofs << e <<" ";
+        ofs << "\n";
+        ofs.close();
     }
 };
 

@@ -67,7 +67,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fext-numeric-literals")
 
 # Set option build shared libs
-option(BUILD_SHARED_LIBS "on/off -> (build every non statc lib shared)/(build everything static)" ON)
+option(BUILD_SHARED_LIBS "on/off -> (build every non statc lib shared)/(build everything static)" OFF)
 
 # Set the global include directories
 include_directories(${OPHIDIAN_INCLUDE_DIRECTORIES})

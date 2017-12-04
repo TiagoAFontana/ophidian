@@ -15,6 +15,11 @@ file(GLOB_RECURSE ophidian_run_experiments_SRC
     "*.h"
 )
 
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+SET(BUILD_SHARED_LIBRARIES OFF)
+SET(CMAKE_EXE_LINKER_FLAGS "-static")
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+
 # Add Catch lib interface
 # add_library(Catch INTERFACE)
 # target_include_directories(Catch INTERFACE .)
@@ -24,8 +29,8 @@ add_executable(ophidian_experiments ${ophidian_run_experiments_SRC})
 
 # Link target dependencies
 target_link_libraries(ophidian_experiments PUBLIC 
-    Catch 
-    papi
+    Catch
+    libpapi.a
     ophidian_circuit 
     ophidian_design 
     ophidian_entity_system 
@@ -41,6 +46,10 @@ target_link_libraries(ophidian_experiments PUBLIC
 # Add namespace directories for lib generation
 #add_subdirectory(chip_boundaries)
 
+# Set option build shared libs
+#option(BUILD_SHARED_LIBS "on/off -> (build every non statc lib shared)/(build everything static)" OFF)
+
+
 ################################################################################
 # Prepare experiments input environment.
 ################################################################################
@@ -48,6 +57,7 @@ target_link_libraries(ophidian_experiments PUBLIC
 message("Creating symlink for test files")
 execute_process(
     COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/test/input_files ${PROJECT_BINARY_DIR}/experiments/.
+#    COMMAND ln -s ~/devel/input_files ${PROJECT_BINARY_DIR}/experiments/input_files
     RESULT_VARIABLE result
 )
 #execute_process(

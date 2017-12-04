@@ -1,10 +1,6 @@
 #ifndef CHIPBOUNDARIES_H
 #define CHIPBOUNDARIES_H
 
-
-
-#include "ophidian/floorplan/Floorplan.h"
-#include "ophidian/floorplan/LefDef2Floorplan.h"
 #include "ophidian/design/Design.h"
 #include "experiments/metric.h"
 
@@ -59,7 +55,7 @@ void chip_boundaries_sequential_ood(ophidian::design::Design &design, Metric &me
 void chip_boundaries_parallel_ood(design::Design &design, Metric &metric);
 
 void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &metric);
-void chip_boundaries_parallell_dod(ophidian::design::Design &design, Metric &metric);
+void chip_boundaries_parallel_dod(ophidian::design::Design &design, Metric &metric);
 
 } // namespace chip_boundaries
 

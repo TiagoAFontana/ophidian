@@ -1,10 +1,5 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
-/*extern Catch::Session session;
-   extern Catch::ConfigData configData;
-
-   std::unique_ptr<Experiment> Experiment::instance;
-   std::once_flag Experiment::onceFlag*/;
 #include "experiment.h"
 
 int main( int argc, char* argv[] )
@@ -37,8 +32,6 @@ int main( int argc, char* argv[] )
 }
 
 
-
-
 //#include "experiment.h"
 //#include "metric.h"
 //#include "./chip_boundaries/problem_a.h"
@@ -46,11 +39,14 @@ int main( int argc, char* argv[] )
 //using namespace ophidian;
 
 ////Chip Boundaries
-//TEST_CASE("Test all circuits runtime DOD Problem 1", "[problem][1]")
+
+//TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test all circuits runtime DOD Problem 1", "[problem][1]")
 //{
 //    std::cout << "problem 1" << std::endl;
 
-//    std::cout << "circuit " << configData.circuit << std::endl;
-//    std::cout << "filename " << configData.outputFilenameExperiments << std::endl;
+//    Experiment &exp = Experiment::getInstance();
+//    std::cout << "circuit " << exp.getCircuit_name() << std::endl;
+//    std::cout << "filename " << exp.getOutput_file() << std::endl;
 
+//    std::cout << "numero de celulas " << design_->netlist().size(ophidian::circuit::Cell()) << std::endl;
 //}

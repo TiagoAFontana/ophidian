@@ -17,6 +17,10 @@
 
 //Chip Boundaries
 
+using namespace ophidian;
+using namespace ophidian::experiments;
+using namespace ophidian::experiments::chip_boundaries;
+
 // ***********************************************************
 //  Object-Oriented Design
 // ***********************************************************

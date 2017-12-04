@@ -43,6 +43,11 @@
 #include "ophidian/design/DesignBuilder.h"
 #include "ophidian/design/Design.h"
 
+namespace ophidian
+{
+namespace experiments
+{
+
 class Experiment
 {
 private:
@@ -91,5 +96,20 @@ public:
 private:
     std::unique_ptr<ophidian::design::DesignBuilder> mDesignBuilder;
 };
+
+class ExperimentFixtureKmeansICCAD2015
+{
+public:
+    ExperimentFixtureKmeansICCAD2015();
+
+    ophidian::design::Design * design_;
+    std::vector<ophidian::geometry::Point> flip_flop_positions;
+private:
+    std::unique_ptr<ophidian::design::DesignBuilder> mDesignBuilder;
+};
+
+
+} // namespace experiments
+} // namespace ophidian
 
 #endif //ophidian_EXPERIMENT_H

@@ -2,6 +2,9 @@
 #include "catch.hpp"
 #include "experiment.h"
 
+using namespace ophidian;
+using namespace ophidian::experiments;
+
 int main( int argc, char* argv[] )
 {
     Catch::Session session; // There must be exactly one instance

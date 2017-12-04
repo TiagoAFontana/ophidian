@@ -4,8 +4,11 @@
 #include "ophidian/design/Design.h"
 #include "experiments/metric.h"
 
-using namespace ophidian;
-
+//using namespace ophidian;
+namespace ophidian
+{
+namespace experiments
+{
 namespace interconnection_estimate
 {
 class Pin;
@@ -46,7 +49,8 @@ void interconnection_estimate_sequential_dod(ophidian::design::Design &design, M
 void interconnection_estimate_parallel_dod(ophidian::design::Design &design, Metric &metric);
 
 
-} // namespace
-
+} // namespace interconnection_estimate
+} // namespace experiments
+} // namespace ophidian
 
 #endif // INTERCONECTIONS_H

@@ -5,7 +5,12 @@
 #include "experiments/metric.h"
 
 
-using namespace ophidian;
+//using namespace ophidian;
+
+namespace ophidian
+{
+namespace experiments
+{
 
 namespace chip_boundaries
 {
@@ -58,5 +63,6 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
 void chip_boundaries_parallel_dod(ophidian::design::Design &design, Metric &metric);
 
 } // namespace chip_boundaries
-
+} // namespace experiments
+} // namespace ophidian
 #endif // CHIPBOUNDARIES_H

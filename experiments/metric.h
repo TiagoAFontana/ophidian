@@ -6,6 +6,11 @@
 #include <string>
 #include <fstream>
 
+namespace ophidian
+{
+namespace experiments
+{
+
 class Metric
 {
 public:
@@ -86,5 +91,8 @@ public:
         ofs.close();
     }
 };
+
+} // namespace experiments
+} // namespace ophidian
 
 #endif //ophidian_METRIC_H

@@ -2,6 +2,10 @@
 #include <ophidian/interconnection/HPWL.h>
 #include <ophidian/interconnection/STWL.h>
 
+namespace ophidian
+{
+namespace experiments
+{
 namespace interconnection_estimate
 {
 
@@ -99,3 +103,5 @@ void interconnection_estimate_parallel_dod(design::Design &design, Metric &metri
 
 
 } // namespace interconnection_estimate
+} // namespace experiments
+} // namespace ophidian

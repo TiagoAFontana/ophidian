@@ -1,7 +1,10 @@
 #include "ChipBoundaries.h"
 
-using namespace ophidian;
-
+//using namespace ophidian;
+namespace ophidian
+{
+namespace experiments
+{
 namespace chip_boundaries
 {
 
@@ -48,7 +51,6 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
         }
     }
     metric.end();
-    metric.print_result();
 }
 void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
 {
@@ -98,3 +100,5 @@ void chip_boundaries_parallel_dod(ophidian::design::Design &design, Metric &metr
 
 
 } // namespace chip_boundaries
+} // namespace experiments
+} // namespace ophidian

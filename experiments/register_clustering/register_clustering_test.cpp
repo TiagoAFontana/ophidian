@@ -2,7 +2,7 @@
 #include <iostream>
 #include "experiments/experiment.h"
 #include "experiments/metric.h"
-#include "Interconnections.h"
+#include "kmeans_data_oriented_design.h"
 
 // PAPI_L1_DCM /*Level 1 data cache misses */
 // PAPI_L1_ICM /*Level 1 instruction cache misses */
@@ -14,11 +14,11 @@
 // PAPI_L2_TCM /*Level 2 total cache misses */
 // PAPI_L3_TCM /*Level 3 total cache misses */
 
-//interconnection_estimate
+//Register Clustering (kmeans)
 
 using namespace ophidian;
 using namespace ophidian::experiments;
-using namespace ophidian::experiments::interconnection_estimate;
+using namespace ophidian::experiments::register_clustering;
 
 // ***********************************************************
 //  Object-Oriented Design
@@ -26,11 +26,13 @@ using namespace ophidian::experiments::interconnection_estimate;
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD runtime", "[problem2][OOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential OOD runtime", "[problem3][OOD][sequential][runtime]")
 {
-    std::cout << "Test Interconection sequential OOD runtime" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *runtime);
+
+//    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *runtime);
+
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -39,14 +41,16 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
 //  Object-Oriented Design
 // ***********************************************************
 //  -- sequential
-//      -- cache miss
+//      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD cache misses", "[problem2][OOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss]")
 {
-    std::cout << "Test Interconection sequential OOD cache misses" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) sequential OOD cache misses" << std::endl;
     int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
-    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
+
+//    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
+
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -57,11 +61,13 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD runtime", "[problem2][OOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel OOD runtime", "[problem3][OOD][parallel][runtime]")
 {
-    std::cout << "Test Interconection parallel OOD runtime" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *runtime);
+
+//    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *runtime);
+
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -70,31 +76,36 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD r
 //  Object-Oriented Design
 // ***********************************************************
 //  -- parallel
-//      -- cache miss
+//      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD cache misses", "[problem2][OOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss]")
 {
-    std::cout << "Test Interconection parallel OOD cache misses" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) parallel OOD cache misses" << std::endl;
     int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
-    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
+
+//    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
+
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
 }
 
 //________________________________________________________________________________________________________________________________
 
+
 // ***********************************************************
 //  Data-Oriented Design
 // ***********************************************************
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD runtime", "[problem2][DOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential DOD runtime", "[problem3][DOD][sequential][runtime]")
 {
-    std::cout << "Test Interconection sequential DOD runtime" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-    interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *runtime);
+
+//    interconnection_estimate::interconnection_estimate_sequential_DOD(*design_, *runtime);
+
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -103,14 +114,16 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
 //  Data-Oriented Design
 // ***********************************************************
 //  -- sequential
-//      -- cache miss
+//      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD cache misses", "[problem2][DOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss]")
 {
-    std::cout << "Test Interconection sequential DOD cache misses" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) sequential DOD cache misses" << std::endl;
     int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
-    interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
+
+//    interconnection_estimate::interconnection_estimate_sequential_DOD(*design_, *miss);
+
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -121,11 +134,13 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD runtime", "[problem2][DOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel DOD runtime", "[problem3][DOD][parallel][runtime]")
 {
-    std::cout << "Test Interconection parallel DOD runtime" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) parallel DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-    interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *runtime);
+
+//    interconnection_estimate::interconnection_estimate_parallel_DOD(*design_, *runtime);
+
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
 }
@@ -134,14 +149,16 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD r
 //  Data-Oriented Design
 // ***********************************************************
 //  -- parallel
-//      -- cache miss
+//      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD cache misses", "[problem2][DOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss]")
 {
-    std::cout << "Test Interconection parallel DOD cache misses" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) parallel DOD cache misses" << std::endl;
     int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
-    interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
+
+//    interconnection_estimate::interconnection_estimate_parallel_DOD(*design_, *miss);
+
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
 }

@@ -59,7 +59,7 @@ target_link_libraries(ophidian_experiments PUBLIC
 message("Creating symlink for test files")
 execute_process(
     COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/test/input_files ${PROJECT_BINARY_DIR}/experiments/.
-#    COMMAND ln -s ~/devel/input_files ${PROJECT_BINARY_DIR}/experiments/input_files
+    COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/experiments/run.sh ${PROJECT_BINARY_DIR}/experiments/.
     RESULT_VARIABLE result
 )
 #execute_process(

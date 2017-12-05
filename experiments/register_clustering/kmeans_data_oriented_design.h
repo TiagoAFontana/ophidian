@@ -7,6 +7,7 @@
 #include "ophidian/entity_system/Property.h"
 #include "ophidian/geometry/Models.h"
 #include "ophidian/entity_system/Aggregation.h"
+#include "experiments/metric.h"
 
 namespace ophidian
 {
@@ -42,8 +43,8 @@ public:
     entity_system::Property<Cluster, cluster_center> clusterCenters_;
     entity_system::Property<Cluster, std::vector<geometry::Point> > clusterElements_;
 
-    void cluster_registers_with_rtree(const std::vector<geometry::Point> & flip_flops, unsigned iterations = 10);
-    void cluster_registers_with_rtree_parallel(const std::vector<geometry::Point> & flip_flops, unsigned iterations = 10);
+    void cluster_registers_with_rtree(const std::vector<geometry::Point> & flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
+    void cluster_registers_with_rtree_parallel(const std::vector<geometry::Point> & flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
 //    void cluster_registers(const std::vector<geometry::Point> & flip_flops, unsigned iterations = 10);
 //    void cluster_registers_parallel(const std::vector<geometry::Point> & flip_flops, unsigned iterations = 10);
 };

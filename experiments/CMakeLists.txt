@@ -15,6 +15,8 @@ file(GLOB_RECURSE ophidian_run_experiments_SRC
     "*.h"
 )
 
+find_package(PAPI)
+
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 SET(BUILD_SHARED_LIBRARIES OFF)
 SET(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -30,7 +32,7 @@ add_executable(ophidian_experiments ${ophidian_run_experiments_SRC})
 # Link target dependencies
 target_link_libraries(ophidian_experiments PUBLIC 
     Catch
-    libpapi.a
+    PAPI
     ophidian_circuit 
     ophidian_design 
     ophidian_entity_system 

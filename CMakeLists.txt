@@ -49,6 +49,9 @@ set(OPHIDIAN_INCLUDE_DIRECTORIES
 # Handle raquirements
 ################################################################################
 
+# Set Cmake module path for find_package
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules)
+
 # Find Boost
 find_package(Boost 1.59 REQUIRED)
 

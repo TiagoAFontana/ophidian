@@ -49,7 +49,7 @@ ExperimentFixtureKmeansICCAD2015::ExperimentFixtureKmeansICCAD2015()
 
 
     std::string ff ("DFF_X80");
-    for(auto cell_it = design.netlist().begin(Cell()); cell_it != design.netlist().end(Cell()); ++cell_it)
+    for(auto cell_it = design_->netlist().begin(ophidian::circuit::Cell()); cell_it != design_->netlist().end(ophidian::circuit::Cell()); ++cell_it)
     {
         auto cell = *cell_it;
         if(ff.compare(design_->netlist().name(cell)) == 0)

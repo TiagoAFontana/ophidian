@@ -2,6 +2,7 @@
 #define KMEANSOBJECTORIENTEDDESIGN_H
 
 #include "ophidian/geometry/Models.h"
+#include "experiments/metric.h"
 
 namespace ophidian
 {
@@ -66,11 +67,10 @@ public:
     KmeansObjectOrientedDesign(geometry::Point chipOrigin, geometry::Point chipBondary, unsigned k = 50);
     KmeansObjectOrientedDesign(const std::vector<geometry::Point> &centers);
 
-    void cluster_registers(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
-    void cluster_registers_with_rtree(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
-
-    void cluster_registers_paralel(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
-    void cluster_registers_with_rtree_paralel(std::vector<FlipFlop> & flip_flops, unsigned iterations = 10);
+    void cluster_registers_with_rtree(std::vector<FlipFlop> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
+    void cluster_registers_with_rtree_paralel(std::vector<FlipFlop> & flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
+//    void cluster_registers(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
+//    void cluster_registers_paralel(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
 };
 
 

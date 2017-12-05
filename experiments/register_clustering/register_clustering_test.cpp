@@ -3,6 +3,7 @@
 #include "experiments/experiment.h"
 #include "experiments/metric.h"
 #include "kmeans_data_oriented_design.h"
+#include "kmeans_object_oriented_design.h"
 
 // PAPI_L1_DCM /*Level 1 data cache misses */
 // PAPI_L1_ICM /*Level 1 instruction cache misses */
@@ -26,12 +27,21 @@ using namespace ophidian::experiments::register_clustering;
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential OOD runtime", "[problem3][OOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD runtime", "[problem3][OOD][sequential][runtime]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-//    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *runtime);
+    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    flip_flops.reserve(flip_flop_positions.size());
+    for(auto p : flip_flop_positions)
+    {
+        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+    }
+
+    kmeansOOD.cluster_registers_with_rtree(flip_flops, *runtime, 10);
 
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
@@ -41,15 +51,24 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  Object-Oriented Design
 // ***********************************************************
 //  -- sequential
-//      -- runtime
+//      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
+    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
 
-//    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
+    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    flip_flops.reserve(flip_flop_positions.size());
+    for(auto p : flip_flop_positions)
+    {
+        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+    }
+
+    kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
 
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -61,12 +80,21 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel OOD runtime", "[problem3][OOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD runtime", "[problem3][OOD][parallel][runtime]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-//    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *runtime);
+    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    flip_flops.reserve(flip_flop_positions.size());
+    for(auto p : flip_flop_positions)
+    {
+        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+    }
+
+    kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *runtime, 10);
 
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
@@ -76,15 +104,24 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  Object-Oriented Design
 // ***********************************************************
 //  -- parallel
-//      -- runtime
+//      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
+    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
 
-//    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
+    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    flip_flops.reserve(flip_flop_positions.size());
+    for(auto p : flip_flop_positions)
+    {
+        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+    }
+
+    kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
 
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -99,12 +136,15 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential DOD runtime", "[problem3][DOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD runtime", "[problem3][DOD][sequential][runtime]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-//    interconnection_estimate::interconnection_estimate_sequential_DOD(*design_, *runtime);
+    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+
+    kmeansDOD.cluster_registers_with_rtree(flip_flop_positions, *runtime, 10);
 
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
@@ -114,15 +154,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  Data-Oriented Design
 // ***********************************************************
 //  -- sequential
-//      -- runtime
+//      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
+    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
 
-//    interconnection_estimate::interconnection_estimate_sequential_DOD(*design_, *miss);
+    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+
+    kmeansDOD.cluster_registers_with_rtree(flip_flop_positions, *miss, 10);
 
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -134,12 +177,15 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel DOD runtime", "[problem3][DOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD runtime", "[problem3][DOD][parallel][runtime]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-//    interconnection_estimate::interconnection_estimate_parallel_DOD(*design_, *runtime);
+    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+
+    kmeansDOD.cluster_registers_with_rtree_parallel(flip_flop_positions, *runtime, 10);
 
     runtime->print_result();
     runtime->print_file_result(Experiment::getInstance().getOutput_file());
@@ -149,15 +195,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) 
 //  Data-Oriented Design
 // ***********************************************************
 //  -- parallel
-//      -- runtime
+//      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_ICM, PAPI_L1_DCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 2));
+    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
 
-//    interconnection_estimate::interconnection_estimate_parallel_DOD(*design_, *miss);
+    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+
+    kmeansDOD.cluster_registers_with_rtree_parallel(flip_flop_positions, *miss, 10);
 
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());

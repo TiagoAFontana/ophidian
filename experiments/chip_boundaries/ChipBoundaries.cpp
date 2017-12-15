@@ -87,13 +87,25 @@ void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
     metric.end();
 }
 
-
+#include <valgrind/callgrind.h>
+#include <sys/time.h>
 void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &metric){
     util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
     util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
     bool placement_is_legal = true;
     auto range = design.placement().cellLocationRange();
+//    int numberCells = 0;
+//    int numberFalse = 0;
+//    struct timeval tvalBefore, tvalAfter;
     metric.start();
+
+//    gettimeofday (&tvalBefore, NULL);
+
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
+//    for (int i = 0; i < 1000000; ++i)
+//    {
+
     for(auto position_it = range.begin(); position_it != range.end(); ++position_it)
     {
         auto position = *position_it;
@@ -101,9 +113,27 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
         {
             placement_is_legal = false;
 //            break;
+//            numberFalse++;
         }
+//        numberCells++;
     }
+//    }
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
+
+//    gettimeofday (&tvalAfter, NULL);
+
     metric.end();
+//    std::cout << "number false : " << numberFalse << std::endl;
+    metric.print_result();
+//    std::cout << "number iterations : " << numberCells << std::endl;
+
+//    printf("Time in microseconds: %ld microseconds\n",
+//           ((tvalAfter.tv_sec - tvalBefore.tv_sec)*1000000L
+//            +tvalAfter.tv_usec) - tvalBefore.tv_usec
+//           );    // Added semicolon
+
+
 }
 
 void chip_boundaries_parallel_dod(ophidian::design::Design &design, Metric &metric){

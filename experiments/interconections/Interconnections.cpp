@@ -42,32 +42,34 @@ const util::LocationDbu &PinPlacement::pin_position(){
 
 void interconnection_estimate_sequential_ood(design::Design &design, Metric &metric)
 {
-    std::vector<Net> m_nets;
-    m_nets.reserve(design.netlist().size(ophidian::circuit::Net()));
-    for(auto net_it = design.netlist().begin(ophidian::circuit::Net()); net_it != design.netlist().end(ophidian::circuit::Net()); ++net_it)
-    {
-        auto net = *net_it;
-        std::string net_name = design.netlist().name(net);
-        Net net_object(net_name);
-        m_nets.push_back(net_object);
-        for(auto pin : design.netlist().pins(net))
-        {
-            std::string pin_name = design.netlist().name(pin);
-            PinPlacement * pin_object = new PinPlacement(pin_name, &net_object);
-            pin_object->set_position(design.placementMapping().location(pin));
-            m_nets.back().add_pin(pin_object);
-        }
-    }
+//    std::vector<Net> m_nets;
+//    m_nets.reserve(design.netlist().size(ophidian::circuit::Net()));
+//    for(auto net_it = design.netlist().begin(ophidian::circuit::Net()); net_it != design.netlist().end(ophidian::circuit::Net()); ++net_it)
+//    {
+//        auto net = *net_it;
+//        std::string net_name = design.netlist().name(net);
+//        //erro no new de object
+//        //colocar unic ponter
+//        Net net_object(net_name);
+//        m_nets.push_back(net_object);
+//        for(auto pin : design.netlist().pins(net))
+//        {
+//            std::string pin_name = design.netlist().name(pin);
+//            PinPlacement * pin_object = new PinPlacement(pin_name, &net_object);
+//            pin_object->set_position(design.placementMapping().location(pin));
+//            m_nets.back().add_pin(pin_object);
+//        }
+//    }
 
     metric.start();
-    for(auto net : m_nets)
-    {
-        std::vector<util::LocationDbu> pin_positions;
-        for(auto pin : net.pins())
-            pin_positions.push_back(static_cast<PinPlacement*>(pin)->pin_position());
-        interconnection::hpwl(pin_positions);
-        interconnection::stwl(pin_positions);
-    }
+//    for(auto net : m_nets)
+//    {
+//        std::vector<util::LocationDbu> pin_positions;
+//        for(auto pin : net.pins())
+//            pin_positions.push_back(static_cast<PinPlacement*>(pin)->pin_position());
+//        interconnection::hpwl(pin_positions);
+//        interconnection::stwl(pin_positions);
+//    }
     metric.end();
 }
 

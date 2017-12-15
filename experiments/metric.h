@@ -5,6 +5,7 @@
 #include <papi.h>
 #include <string>
 #include <fstream>
+#include <string.h>
 
 namespace ophidian
 {
@@ -34,7 +35,9 @@ public:
 
     void print_result(){
         auto total_time = time_end - time_start;
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count()<<" ms"<<std::endl;
+//        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count()<<" ms"<<std::endl;
+        std::cout << std::chrono::duration_cast<std::chrono::microseconds>(total_time).count()<<" us"<<std::endl;
+        std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(total_time).count()<<" ns"<<std::endl;
     }
 
     void print_file_result(std::string filename){
@@ -43,10 +46,32 @@ public:
             std::cout << "Output file name error!!" << std::endl;
             return;
         }
+        std::cout << "Write runtime result on file : " << filename << std::endl;
         auto total_time = time_end - time_start;
-        std::ofstream ofs;
-        ofs.open (filename, std::ofstream::out | std::ofstream::app);
-        ofs << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() << " ms\n";
+
+        std::fstream ofs;
+        ofs.open(filename.c_str(), std::fstream::in | std::fstream::out);
+        // If file does not exist, Create new file
+        if (!ofs )
+        {
+            //no file in directory
+            //creating metric label
+            ofs.open(filename.c_str(), std::ofstream::out | std::ofstream::app);
+            ofs << "runtime\n";
+        }
+        else {
+            ofs.seekg(0, std::ios_base::end);
+        }
+
+
+        if (ofs.is_open())
+        {
+//            ofs << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() << " ms\n";
+            ofs << std::chrono::duration_cast<std::chrono::microseconds>(total_time).count() << " us\n";
+        }
+        else {
+            std::cout << "Open file error!!" << std::endl;
+        }
         ofs.close();
     }
 };
@@ -83,11 +108,30 @@ public:
             std::cout << "Output file name error!!" << std::endl;
             return;
         }
-        std::ofstream ofs;
-        ofs.open (filename, std::ofstream::out | std::ofstream::app);
-        for(auto e : events)
-            ofs << e <<" ";
-        ofs << "\n";
+        std::cout << "Write cache miss result on file : " << filename << std::endl;
+        std::fstream ofs;
+        ofs.open(filename.c_str(), std::fstream::in | std::fstream::out);
+        // If file does not exist, Create new file
+        if (!ofs )
+        {
+            //no file in directory
+            //creating metric label
+            ofs.open(filename.c_str(), std::ofstream::out | std::ofstream::app);
+            ofs << "PAPI_L1_TCM PAPI_L2_TCM PAPI_L3_TCM\n";
+        }
+        else {
+            ofs.seekg(0, std::ios_base::end);
+        }
+
+        if (ofs.is_open())
+        {
+            for(auto e : events)
+                ofs << e <<" ";
+            ofs << "\n";
+        }
+        else {
+            std::cout << "Open file error!!" << std::endl;
+        }
         ofs.close();
     }
 };

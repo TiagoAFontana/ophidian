@@ -1,6 +1,6 @@
 #include "kmeans_object_oriented_design.h"
 #include <boost/geometry/index/rtree.hpp>
-
+#include <valgrind/callgrind.h>
 namespace ophidian
 {
 namespace experiments
@@ -98,6 +98,8 @@ KmeansObjectOrientedDesign::KmeansObjectOrientedDesign(const std::vector<geometr
 void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFlop> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -131,6 +133,8 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
             }
         }
     }
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
 

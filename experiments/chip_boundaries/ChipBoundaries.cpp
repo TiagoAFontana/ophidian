@@ -1,4 +1,5 @@
 #include "ChipBoundaries.h"
+#include <valgrind/callgrind.h>
 
 //using namespace ophidian;
 namespace ophidian
@@ -41,8 +42,15 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
 
     bool placemente_is_legal = true;
     metric.start();
-    for(auto cell : m_cells)
+
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
+
+//    for(auto cell : m_cells)
+//    {
+    for(auto cell_it = m_cells.begin(); cell_it < m_cells.end(); ++cell_it)
     {
+        auto cell = *cell_it;
         auto position = cell.get_position();
         if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
         {
@@ -50,6 +58,10 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
 //            break;
         }
     }
+
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
+
     metric.end();
 }
 void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
@@ -87,15 +99,13 @@ void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
     metric.end();
 }
 
-#include <valgrind/callgrind.h>
-#include <sys/time.h>
+
+//#include <sys/time.h>
 void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &metric){
     util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
     util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
     bool placement_is_legal = true;
     auto range = design.placement().cellLocationRange();
-//    int numberCells = 0;
-//    int numberFalse = 0;
 //    struct timeval tvalBefore, tvalAfter;
     metric.start();
 
@@ -103,8 +113,7 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
 
     CALLGRIND_ZERO_STATS;
     CALLGRIND_START_INSTRUMENTATION;
-//    for (int i = 0; i < 1000000; ++i)
-//    {
+
 
     for(auto position_it = range.begin(); position_it != range.end(); ++position_it)
     {
@@ -113,11 +122,9 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
         {
             placement_is_legal = false;
 //            break;
-//            numberFalse++;
         }
-//        numberCells++;
     }
-//    }
+
     CALLGRIND_DUMP_STATS;
     CALLGRIND_STOP_INSTRUMENTATION;
 

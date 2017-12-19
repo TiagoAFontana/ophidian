@@ -1,6 +1,6 @@
 #include "kmeans_data_oriented_design.h"
 #include <boost/geometry/index/rtree.hpp>
-
+#include <valgrind/callgrind.h>
 namespace ophidian
 {
 namespace experiments
@@ -35,6 +35,8 @@ KmeansDataOrientedDesign::KmeansDataOrientedDesign(const std::vector<geometry::P
 void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<geometry::Point> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -67,6 +69,8 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<ge
             }
         }
     }
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
 

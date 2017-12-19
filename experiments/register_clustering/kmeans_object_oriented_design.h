@@ -20,10 +20,14 @@ private:
     ClusterOOD * clusterBest_;
 
     std::string name_ = "DFF_X80";
+    volatile long long cap;
+    volatile long long cap2;
     geometry::Point size_;
     int net_;
 public:
     FlipFlop(geometry::Point & p) : position_(p) {
+        cap = 5;
+        cap2 = cap * 2;
     }
 
     geometry::Point position() const;

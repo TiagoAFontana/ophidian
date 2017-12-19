@@ -1,4 +1,4 @@
-#include "catch.hpp"
+#include "../test/catch.hpp"
 #include <iostream>
 #include "experiments/experiment.h"
 #include "experiments/metric.h"

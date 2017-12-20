@@ -87,6 +87,8 @@ public:
     }
 
     void start(){
+        PAPI_library_init(PAPI_VER_CURRENT);
+        PAPI_reset(*PAPI_events);
         PAPI_start_counters( PAPI_events, events_size );
     }
 

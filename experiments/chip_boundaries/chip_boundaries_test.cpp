@@ -21,6 +21,21 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::chip_boundaries;
 
+TEST_CASE("papi", "[PAPI]")
+{
+
+    int num_hwcntrs;
+/*  The installation does not support PAPI */
+    if ((num_hwcntrs = PAPI_num_counters()) < 0 )
+        std::cout << "ERROR " << std::endl;
+/*  The installation supports PAPI, but has no counters */
+    if ((num_hwcntrs = PAPI_num_counters()) == 0 )
+        std::cout << "Info:: This machine does not provide hardware counters"<< std::endl;
+
+    std::cout << "num_hwcntrs = " << num_hwcntrs << std::endl;
+
+}
+
 // ***********************************************************
 //  Object-Oriented Design
 // ***********************************************************
@@ -108,10 +123,82 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential DO
 TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential DOD cache misses", "[problem1][DOD][sequential][miss]")
 {
     std::cout << "Test Chip Boundaries sequential DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+//    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};
+//    int PAPI_events[] = {
+//        PAPI_L1_DCM,
+//        PAPI_L1_ICM,
+//        PAPI_L2_DCM,
+//        PAPI_L2_ICM,
+//        PAPI_L1_TCM,
+//        PAPI_L2_TCM,
+//        PAPI_L3_TCM,
+//        PAPI_L1_LDM,
+//        PAPI_L1_STM,
+//        PAPI_L2_LDM,
+//        PAPI_L2_STM
+//    };
+
+//    int PAPI_events[] = {
+//        PAPI_L1_DCM,
+//        PAPI_L1_ICM,
+//        PAPI_L1_LDM,
+//        PAPI_L1_STM,
+//        PAPI_L1_TCM,
+//        PAPI_L2_DCM,
+//        PAPI_L2_ICM,
+//        PAPI_L2_LDM,
+//        PAPI_L2_STM,
+//        PAPI_L2_TCM
+////        PAPI_L3_TCM
+//    };
+
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+//        PAPI_L1_LDM,
+//        PAPI_L1_STM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+//        PAPI_L2_LDM,
+//        PAPI_L2_STM,
+        PAPI_L3_TCM
+    };
+
+
+//    int PAPI_events[] = {
+//        PAPI_L1_DCM,
+//        PAPI_L1_ICM,
+//        PAPI_L1_LDM,
+//        PAPI_L1_STM,
+//        PAPI_L2_ICM,
+//        PAPI_L2_TCM,
+//        PAPI_L2_LDM,
+//        PAPI_L2_STM,
+////        PAPI_L3_TCM,
+////        PAPI_L3_LDM,
+//        PAPI_L2_DCA
+//    };
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+
+
+
     chip_boundaries::chip_boundaries_sequential_dod(*design_, *miss);
     miss->print_result();
+
+
+//    for (int i = 0; i < 11; ++i)
+//    {
+//        PAPI_event_info_t *info;
+//        PAPI_get_event_info(PAPI_events[i], info);
+//        info->
+//    }
+
+
+
+
     miss->print_file_result(Experiment::getInstance().getOutput_file());
 }
 

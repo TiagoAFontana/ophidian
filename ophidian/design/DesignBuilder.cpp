@@ -100,6 +100,7 @@ Design & ICCAD2015ContestDesignBuilder::build()
 
 
     circuit::def2LibraryMapping(*mDef, mDesign.netlist(), mDesign.standardCells(), mDesign.libraryMapping());
+    circuit::verilog2LibraryMapping(*mVerilog, mDesign.netlist(), mDesign.standardCells(), mDesign.libraryMapping());
 
     return mDesign;
 }

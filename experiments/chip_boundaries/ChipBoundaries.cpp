@@ -21,6 +21,26 @@ const util::LocationDbu & PlacementCell::get_position(){
     return m_position;
 }
 
+void loop(std::vector<PlacementCell>& m_cells, util::LocationDbu m_chip_Origin, util::LocationDbu m_chip_UpperRightCorner){
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
+
+    bool placemente_is_legal = true;
+    for(auto cell_it = m_cells.begin(); cell_it < m_cells.end(); ++cell_it)
+    {
+        auto cell = *cell_it;
+        auto position = cell.get_position();
+        if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
+        {
+            placemente_is_legal = false;
+//            break;
+        }
+    }
+
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
+}
+
 void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
 {
     using Cell = ophidian::circuit::Cell;
@@ -45,9 +65,8 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
 
     CALLGRIND_ZERO_STATS;
     CALLGRIND_START_INSTRUMENTATION;
+//    CALLGRIND_TOGGLE_COLLECT;
 
-//    for(auto cell : m_cells)
-//    {
     for(auto cell_it = m_cells.begin(); cell_it < m_cells.end(); ++cell_it)
     {
         auto cell = *cell_it;
@@ -61,6 +80,7 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
 
     CALLGRIND_DUMP_STATS;
     CALLGRIND_STOP_INSTRUMENTATION;
+//    loop(m_cells, m_chip_Origin, m_chip_UpperRightCorner);
 
     metric.end();
 }
@@ -102,11 +122,11 @@ void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
 
 //#include <sys/time.h>
 void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &metric){
-    util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
-    util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
     bool placement_is_legal = true;
-    auto range = design.placement().cellLocationRange();
 //    struct timeval tvalBefore, tvalAfter;
+
+    std::cout << "number of cells = " << design.netlist().size(circuit::Cell()) << std::endl;
+
     metric.start();
 
 //    gettimeofday (&tvalBefore, NULL);
@@ -114,10 +134,17 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
     CALLGRIND_ZERO_STATS;
     CALLGRIND_START_INSTRUMENTATION;
 
+    util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
+    util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
+//    int cell_id = 0;
 
+    auto range = design.placement().cellLocationRange();
+//    for(auto position : range)
     for(auto position_it = range.begin(); position_it != range.end(); ++position_it)
     {
         auto position = *position_it;
+//        std::cout <<"x: " << position.x() <<  " y: " <<  position.y() << std::endl;
+//        cell_id++;
         if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
         {
             placement_is_legal = false;
@@ -125,8 +152,24 @@ void chip_boundaries_sequential_dod(ophidian::design::Design &design, Metric &me
         }
     }
 
+
+//    for(auto cell_it = design.netlist().begin(circuit::Cell()); cell_it != design.netlist().end(circuit::Cell()); ++cell_it)
+//    {
+//        auto cell = *cell_it;
+//        auto position = design.placement().cellLocation(cell);
+
+//        if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
+//        {
+//            placement_is_legal = false;
+////            break;
+//        }
+//    }
+
     CALLGRIND_DUMP_STATS;
     CALLGRIND_STOP_INSTRUMENTATION;
+
+
+//    std::cout << "iterations : " << cell_id << std::endl;
 
 //    gettimeofday (&tvalAfter, NULL);
 

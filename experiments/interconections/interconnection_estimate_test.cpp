@@ -44,8 +44,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
 TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD cache misses", "[problem2][OOD][sequential][miss]")
 {
     std::cout << "Test Interconection sequential OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -75,8 +85,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD r
 TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD cache misses", "[problem2][OOD][parallel][miss]")
 {
     std::cout << "Test Interconection parallel OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -108,8 +128,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
 TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD cache misses", "[problem2][DOD][sequential][miss]")
 {
     std::cout << "Test Interconection sequential DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());
@@ -139,8 +169,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD r
 TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD cache misses", "[problem2][DOD][parallel][miss]")
 {
     std::cout << "Test Interconection parallel DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
     miss->print_result();
     miss->print_file_result(Experiment::getInstance().getOutput_file());

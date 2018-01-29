@@ -57,7 +57,7 @@ public:
             //no file in directory
             //creating metric label
             ofs.open(filename.c_str(), std::ofstream::out | std::ofstream::app);
-            ofs << "runtime\n";
+            ofs << "runtime unidade\n";
         }
         else {
             ofs.seekg(0, std::ios_base::end);
@@ -119,7 +119,7 @@ public:
             //no file in directory
             //creating metric label
             ofs.open(filename.c_str(), std::ofstream::out | std::ofstream::app);
-            ofs << "PAPI_L1_TCM PAPI_L2_TCM PAPI_L3_TCM\n";
+            ofs << "PAPI_L1_DCM PAPI_L1_ICM PAPI_L1_TCM PAPI_L2_DCM PAPI_L2_ICM PAPI_L2_TCM PAPI_L3_TCM\n";
         }
         else {
             ofs.seekg(0, std::ios_base::end);
@@ -127,9 +127,16 @@ public:
 
         if (ofs.is_open())
         {
-            for(auto e : events)
-                ofs << e <<" ";
-            ofs << "\n";
+//            for(auto e : events)
+//                ofs << e <<" ";
+//            ofs << "\n";
+
+            std::vector<long long>::size_type size_events = events.size();
+            for(unsigned i=0; i<size_events-1; i++)
+            {
+                ofs << events[i] <<" ";
+            }
+            ofs << events[size_events-1] <<"\n";
         }
         else {
             std::cout << "Open file error!!" << std::endl;

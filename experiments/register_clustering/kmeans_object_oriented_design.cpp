@@ -141,6 +141,8 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
 void KmeansObjectOrientedDesign::cluster_registers_with_rtree_paralel(std::vector<FlipFlop> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
+    CALLGRIND_ZERO_STATS;
+    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -187,6 +189,8 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree_paralel(std::vecto
             }
         }
     }
+    CALLGRIND_DUMP_STATS;
+    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
 

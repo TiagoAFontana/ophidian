@@ -127,7 +127,7 @@ void Netlist::disconnect(const Pin &p)
 
 Cell Netlist::cell(const Pin &p) const
 {
-	return mCellPins.whole(p);
+    return mCellPins.whole(p);
 }
 
 entity_system::EntitySystem<Pin>::NotifierType *Netlist::notifier(Pin) const

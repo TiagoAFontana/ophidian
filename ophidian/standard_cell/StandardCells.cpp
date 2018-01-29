@@ -114,7 +114,9 @@ Pin StandardCells::add(Pin, const std::string &name, PinDirection direction)
 		return pin;
 	}
 	else {
-		return mName2Pin[name];
+        auto pin = mName2Pin[name];
+        mPinDirections[pin] = direction;
+        return pin;
 	}
 }
 

@@ -56,8 +56,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
@@ -109,8 +119,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel OOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
@@ -159,8 +179,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
     register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
@@ -200,8 +230,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel DOD cache misses" << std::endl;
-    int PAPI_events[] = {PAPI_L1_TCM, PAPI_L2_TCM, PAPI_L3_TCM};//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 3));
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
     register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 

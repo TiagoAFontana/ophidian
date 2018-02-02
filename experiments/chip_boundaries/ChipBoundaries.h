@@ -53,7 +53,7 @@ public:
     PlacementCell(const std::string & name, const bool fixed, std::size_t pins_size);
     void set_geometry(multibox geometry);
     void set_position(const util::LocationDbu & position);
-    const util::LocationDbu &get_position();
+    const util::LocationDbu get_position();
 };
 
 void chip_boundaries_sequential_ood(ophidian::design::Design &design, Metric &metric);

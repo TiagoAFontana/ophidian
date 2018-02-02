@@ -17,7 +17,7 @@ void PlacementCell::set_geometry(multibox geometry){
 void PlacementCell::set_position(const util::LocationDbu & position){
     m_position = position;
 }
-const util::LocationDbu & PlacementCell::get_position(){
+const util::LocationDbu PlacementCell::get_position(){
     return m_position;
 }
 
@@ -60,29 +60,67 @@ void chip_boundaries_sequential_ood(design::Design &design, Metric &metric)
         m_cells.push_back(p_cell);
     }
 
+
+
+    std::cout<<"---- INFO: teste miss----"
+             <<"\nNumber Objects: "<< design.netlist().size(ophidian::circuit::Cell())
+//        << "\nIterations: " << ITERATIONS
+             << "\nsize Object : " << sizeof(ophidian::experiments::chip_boundaries::PlacementCell)
+//        << "\nsize Vector : " << sizeof(registers)
+             << "\n expected cache misses: " << design.netlist().size(ophidian::circuit::Cell()) * sizeof(ophidian::experiments::chip_boundaries::PlacementCell) / 64
+             << "\n------" <<std::endl;
+
+
     bool placemente_is_legal = true;
+
+    int cont = 0;
     metric.start();
+    for (int j = 0; j < design.netlist().size(ophidian::circuit::Cell()); ++j)
+    {
+        cont++;
+        auto position = m_cells[j].get_position();
+        if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
+        {
+            placemente_is_legal = false;
+        }
 
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
-//    CALLGRIND_TOGGLE_COLLECT;
+    }
+    metric.end();
+    metric.print_result();
 
+    std::cout<<"---- last----CONT :" << cont <<std::endl;
+
+    cont = 0;
+    metric.start();
     for(auto cell_it = m_cells.begin(); cell_it < m_cells.end(); ++cell_it)
     {
+        cont++;
         auto cell = *cell_it;
         auto position = cell.get_position();
         if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
         {
             placemente_is_legal = false;
-//            break;
         }
     }
-
-    CALLGRIND_DUMP_STATS;
-    CALLGRIND_STOP_INSTRUMENTATION;
-//    loop(m_cells, m_chip_Origin, m_chip_UpperRightCorner);
-
     metric.end();
+    metric.print_result();
+    std::cout<<"---- last----CONT :" << cont <<std::endl;
+
+    cont = 0;
+    metric.start();
+    for(auto cell : m_cells)
+    {
+        cont++;
+//        auto cell = *cell_it;
+        auto position = cell.get_position();
+        if(position.x() < m_chip_Origin.x() || position.y() < m_chip_Origin.y() || position.x() > m_chip_UpperRightCorner.x() || position.y() > m_chip_UpperRightCorner.y())
+        {
+            placemente_is_legal = false;
+        }
+    }
+    metric.end();
+    metric.print_result();
+    std::cout<<"---- last----CONT :" << cont <<std::endl;
 }
 void chip_boundaries_parallel_ood(design::Design &design, Metric &metric)
 {

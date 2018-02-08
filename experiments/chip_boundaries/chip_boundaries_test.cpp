@@ -91,8 +91,8 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential OO
 
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     chip_boundaries::chip_boundaries_sequential_ood(*design_, *miss);
-//    miss->print_result();
-//    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    miss->print_result();
+    miss->print_file_result(Experiment::getInstance().getOutput_file());
 }
 
 // ***********************************************************

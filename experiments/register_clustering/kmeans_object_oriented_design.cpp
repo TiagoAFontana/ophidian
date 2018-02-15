@@ -95,11 +95,20 @@ KmeansObjectOrientedDesign::KmeansObjectOrientedDesign(const std::vector<geometr
     }
 }
 
+
 void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFlop> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
+#if 0
+    std::cout<<"---- INFO: teste miss----"
+             <<"\nNumber flipflops: "<< flip_flops.size()
+             << "\nsize flipflops : " << sizeof(FlipFlop)
+             <<"\nNumber Cluster: "<< clusters_.size()
+             << "\nsize Cluster : " << sizeof(ClusterOOD)
+//             << "\n expected cache misses: " << design.netlist().size(ophidian::circuit::Cell()) * sizeof(ophidian::experiments::chip_boundaries::PlacementCell) / 64
+             << "\n------" <<std::endl;
+#endif
+
     metric.start();
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -109,16 +118,18 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
             cluster.clear();
         }
 
-        for (FlipFlop & flip_flop : flip_flops)
+        for(auto flip_flop_it = flip_flops.begin(); flip_flop_it != flip_flops.end(); ++flip_flop_it)
         {
+            auto flip_flop = *flip_flop_it;
             std::vector<rtree_node> closest_nodes;
             clusters_rtree.query(boost::geometry::index::nearest(flip_flop.position(), 1), std::back_inserter(closest_nodes));
             ClusterOOD * closest_cluster = closest_nodes.front().second;
             closest_cluster->insertElement(flip_flop);
         }
 
-        for (ClusterOOD & cluster : clusters_)
+        for(auto cluster_it = clusters_.begin(); cluster_it != clusters_.end(); ++cluster_it)
         {
+            auto cluster = *cluster_it;
             if(cluster.elements().size() != 0)
             {
                 double x_c = 0, y_c = 0;
@@ -133,16 +144,12 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
             }
         }
     }
-    CALLGRIND_DUMP_STATS;
-    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
 
 void KmeansObjectOrientedDesign::cluster_registers_with_rtree_paralel(std::vector<FlipFlop> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -189,123 +196,8 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree_paralel(std::vecto
             }
         }
     }
-    CALLGRIND_DUMP_STATS;
-    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
-
-//void KmeansObjectOrientedDesign::cluster_registers(std::vector<FlipFlop> &flip_flops, unsigned iterations)
-//{
-//    for (int i = 0; i < iterations; ++i)
-//    {
-
-//        for(auto & cluster : clusters_)
-//        {
-//            cluster.clear();
-//        }
-
-
-
-//        for (auto & flip_flop : flip_flops)
-//        {
-//            ClusterOOD * cluster_best;
-//            double cost_best = std::numeric_limits<double>::max();
-//            for (auto & cluster : clusters_)
-//            {
-//                geometry::Point center = cluster.center();
-
-//                double distanceX = (flip_flop.position().x() - center.x()) * (flip_flop.position().x() - center.x());
-//                double distanceY = (flip_flop.position().y() - center.y()) * (flip_flop.position().y() - center.y());
-//                double cost = std::sqrt(distanceX + distanceY);
-
-//                if(cost < cost_best)
-//                {
-//                    cost_best = cost;
-//                    cluster_best = &cluster;
-//                }
-//            }
-//            cluster_best->insertElement(flip_flop);
-//        }
-
-//        for (ClusterOOD & cluster : clusters_)
-//        {
-//            if(cluster.elements().size() != 0)
-//            {
-//                double x_c = 0, y_c = 0;
-//                for(auto p : cluster.elements())
-//                {
-//                    x_c += p.position().x();
-//                    y_c += p.position().y();
-//                }
-//                x_c = x_c / (double)cluster.elements().size();
-//                y_c = y_c / (double)cluster.elements().size();
-//                cluster.center(geometry::Point(x_c, y_c));
-//            }
-//        }
-//    }
-//}
-
-//void KmeansObjectOrientedDesign::cluster_registers_paralel(std::vector<FlipFlop> &flip_flops, unsigned iterations)
-//{
-//    for (int i = 0; i < iterations; ++i)
-//    {
-
-//#pragma omp parallel for
-//        for(auto cluster = clusters_.begin(); cluster < clusters_.end(); ++cluster)
-//        {
-//            cluster->clear();
-//        }
-
-//#pragma omp parallel for
-//        for (unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
-//        {
-//            FlipFlop &flip_flop = flip_flops.at(flip_flop_index);
-
-//            ClusterOOD * cluster_best;
-//            double cost_best = std::numeric_limits<double>::max();
-//            for (auto & cluster : clusters_)
-//            {
-//                geometry::Point center = cluster.center();
-
-//                double distanceX = (flip_flop.position().x() - center.x()) * (flip_flop.position().x() - center.x());
-//                double distanceY = (flip_flop.position().y() - center.y()) * (flip_flop.position().y() - center.y());
-//                double cost = std::sqrt(distanceX + distanceY);
-
-//                if(cost < cost_best)
-//                {
-//                    cost_best = cost;
-//                    cluster_best = &cluster;
-//                }
-//            }
-//            flip_flop.setClusterBest(cluster_best);
-//        }
-
-//        for(unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
-//        {
-//            auto &flip_flop = flip_flops.at(flip_flop_index);
-//            auto cluster = flip_flop.clusterBest();
-//            cluster->insertElement(flip_flop);
-//        }
-
-//#pragma omp parallel for
-//        for (auto cluster = clusters_.begin(); cluster < clusters_.end(); ++cluster)
-//        {
-//            if(cluster->elements().size() != 0 )
-//            {
-//                double x_c = 0, y_c = 0;
-//                for(auto p : cluster->elements())
-//                {
-//                    x_c += p.position().x();
-//                    y_c += p.position().y();
-//                }
-//                x_c = x_c / (double)cluster->elements().size();
-//                y_c = y_c / (double)cluster->elements().size();
-//                cluster->center(geometry::Point(x_c, y_c));
-//            }
-//        }
-//    }
-//}
-
 
 } // namespace register_clustering
 } // namespace experiments

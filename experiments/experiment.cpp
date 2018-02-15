@@ -47,12 +47,12 @@ ExperimentFixtureKmeansICCAD2015::ExperimentFixtureKmeansICCAD2015()
     mDesignBuilder.reset( new ophidian::design::ICCAD2015ContestDesignBuilder(lefFile, defFile, verilogFile));
     design_ = &mDesignBuilder->build();
 
-
     std::string ff ("DFF_X80");
     for(auto cell_it = design_->netlist().begin(ophidian::circuit::Cell()); cell_it != design_->netlist().end(ophidian::circuit::Cell()); ++cell_it)
     {
         auto cell = *cell_it;
-        if(ff.compare(design_->netlist().name(cell)) == 0)
+        auto stdCell = design_->libraryMapping().cellStdCell(cell);
+        if(ff.compare(design_->standardCells().name(stdCell)) == 0)
         {
             util::LocationDbu cell_position = design_->placement().cellLocation(cell);
             flip_flop_positions.push_back(ophidian::geometry::Point(cell_position.toPoint().x(), cell_position.toPoint().y()));

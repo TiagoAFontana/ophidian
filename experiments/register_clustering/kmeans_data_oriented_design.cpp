@@ -35,8 +35,6 @@ KmeansDataOrientedDesign::KmeansDataOrientedDesign(const std::vector<geometry::P
 void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<geometry::Point> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -46,15 +44,19 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<ge
             clusterElements_[cluster].clear();
         }
 
-        for (auto & flip_flop : flip_flops)
+//        for (auto & flip_flop : flip_flops)
+        for(auto flip_flop_it = flip_flops.begin(); flip_flop_it != flip_flops.end(); ++flip_flop_it)
         {
+            auto flip_flop = *flip_flop_it;
             std::vector<rtree_node> closest_nodes;
             clusters_rtree.query(boost::geometry::index::nearest(flip_flop, 1), std::back_inserter(closest_nodes));
             auto closest_cluster = closest_nodes.front().second;
             clusterElements_[closest_cluster].push_back(flip_flop);
         }
-        for (auto & cluster : clusters_)
+//        for (auto & cluster : clusters_)
+        for(auto cluster_it = clusters_.begin(); cluster_it != clusters_.end(); ++cluster_it)
         {
+            auto cluster = *cluster_it;
             if(clusterElements_[cluster].size() != 0)
             {
                 double x_c = 0, y_c = 0;
@@ -69,16 +71,12 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<ge
             }
         }
     }
-    CALLGRIND_DUMP_STATS;
-    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
 
 void KmeansDataOrientedDesign::cluster_registers_with_rtree_parallel(const std::vector<geometry::Point> &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations)
 {
     metric.start();
-    CALLGRIND_ZERO_STATS;
-    CALLGRIND_START_INSTRUMENTATION;
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
@@ -124,123 +122,8 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree_parallel(const std::
             }
         }
     }
-    CALLGRIND_DUMP_STATS;
-    CALLGRIND_STOP_INSTRUMENTATION;
     metric.end();
 }
-
-//void KmeansDataOrientedDesign::cluster_registers(const std::vector<geometry::Point> &flip_flops, unsigned iterations)
-//{
-//    for (int i = 0; i < iterations; ++i)
-//    {
-
-//        for (auto & cluster : clusters_)
-//        {
-//            clusterElements_[cluster].clear();
-//        }
-
-//        for (auto & flip_flop : flip_flops)
-//        {
-//            Cluster cluster_best;
-//            double cost_best = std::numeric_limits<double>::max();
-//            for (auto & cluster_center : clusterCenters_)
-//            {
-//                geometry::Point center = cluster_center.first;
-
-//                double distanceX = (flip_flop.x() - center.x()) * (flip_flop.x() - center.x());
-//                double distanceY = (flip_flop.y() - center.y()) * (flip_flop.y() - center.y());
-//                double cost = std::sqrt(distanceX + distanceY);
-
-//                if(cost < cost_best)
-//                {
-//                    cost_best = cost;
-//                    cluster_best = cluster_center.second;
-//                }
-//            }
-//            clusterElements_[cluster_best].push_back(flip_flop);
-//        }
-
-//        for (auto & cluster_center : clusterCenters_)
-//        {
-//            auto cluster = cluster_center.second;
-//            if(clusterElements_[cluster].size() != 0)
-//            {
-//                double x_c = 0, y_c = 0;
-//                for(auto p : clusterElements_[cluster])
-//                {
-//                    x_c += p.x();
-//                    y_c += p.y();
-//                }
-//                x_c = x_c / (double)clusterElements_[cluster].size();
-//                y_c = y_c / (double)clusterElements_[cluster].size();
-//                cluster_center.first = geometry::Point(x_c, y_c);
-//            }
-//        }
-//    }
-//}
-
-//void KmeansDataOrientedDesign::cluster_registers_parallel(const std::vector<geometry::Point> &flip_flops, unsigned iterations)
-//{
-//    for (int i = 0; i < iterations; ++i)
-//    {
-
-//#pragma omp parallel for
-//        for (auto elements_to_cluster = clusterElements_.begin(); elements_to_cluster < clusterElements_.end(); ++elements_to_cluster)
-//        {
-//            elements_to_cluster->clear();
-//        }
-
-//        std::vector<Cluster> flip_flop_to_cluster;
-//        flip_flop_to_cluster.resize(flip_flops.size());
-//#pragma omp parallel for
-//        for (unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
-//        {
-//            auto flip_flop = flip_flops.at(flip_flop_index);
-
-//            Cluster cluster_best;
-//            double cost_best = std::numeric_limits<double>::max();
-//            for (auto & cluster_center : clusterCenters_)
-//            {
-//                geometry::Point center = cluster_center.first;
-
-//                double distanceX = (flip_flop.x() - center.x()) * (flip_flop.x() - center.x());
-//                double distanceY = (flip_flop.y() - center.y()) * (flip_flop.y() - center.y());
-//                double cost = std::sqrt(distanceX + distanceY);
-
-//                if(cost < cost_best)
-//                {
-//                    cost_best = cost;
-//                    cluster_best = cluster_center.second;
-//                }
-//            }
-//            flip_flop_to_cluster.at(flip_flop_index) = cluster_best;
-//        }
-
-//        for(unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
-//        {
-//            auto flip_flop = flip_flops.at(flip_flop_index);
-//            auto cluster = flip_flop_to_cluster.at(flip_flop_index);
-//            clusterElements_[cluster].push_back(flip_flop);
-//        }
-
-//#pragma omp parallel for
-//        for (auto cluster = clusters_.begin(); cluster < clusters_.end(); ++cluster)
-//        {
-//            if(clusterElements_[*cluster].size() != 0)
-//            {
-//                double x_c = 0, y_c = 0;
-//                for(auto p : clusterElements_[*cluster])
-//                {
-//                    x_c += p.x();
-//                    y_c += p.y();
-//                }
-//                x_c = x_c / (double)clusterElements_[*cluster].size();
-//                y_c = y_c / (double)clusterElements_[*cluster].size();
-//                clusterCenters_[*cluster].first = geometry::Point(x_c, y_c);
-//            }
-//        }
-//    }
-//}
 
 } // namespace register_clustering
 } // namespace experiments

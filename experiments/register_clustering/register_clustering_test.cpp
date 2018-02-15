@@ -73,11 +73,13 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
+    int cont = 0;
     for(auto p : flip_flop_positions)
     {
+        cont++;
         flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
     }
-
+    std::cout << "ffPositions " << flip_flop_positions.size() << "\ncont " << cont << "\nSIZE FLIPFLOPS " << flip_flops.size() << std::endl;
     kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
 
     miss->print_result();

@@ -16,6 +16,8 @@
 
 //interconnection_estimate
 
+#define ITERATIONS 1
+
 using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::interconnection_estimate;
@@ -56,9 +58,13 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -97,9 +103,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD c
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 //________________________________________________________________________________________________________________________________
@@ -140,9 +149,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-    interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -181,7 +193,10 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD c
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-    interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }

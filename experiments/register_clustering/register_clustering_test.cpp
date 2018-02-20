@@ -21,6 +21,8 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::register_clustering;
 
+#define ITERATIONS 10
+
 // ***********************************************************
 //  Object-Oriented Design
 // ***********************************************************
@@ -73,17 +75,22 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
-    int cont = 0;
+
     for(auto p : flip_flop_positions)
     {
-        cont++;
         flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
     }
-    std::cout << "ffPositions " << flip_flop_positions.size() << "\ncont " << cont << "\nSIZE FLIPFLOPS " << flip_flops.size() << std::endl;
-    kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
 
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+
+        kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
+
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    }
 }
 
 // ***********************************************************
@@ -143,10 +150,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
         flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
     }
 
-    kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
 
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+
+
+        kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
+
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    }
+
 }
 
 //________________________________________________________________________________________________________________________________
@@ -194,13 +209,18 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
 
-    kmeansDOD.cluster_registers_with_rtree(flip_flop_positions, *miss, 10);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+        kmeansDOD.cluster_registers_with_rtree(flip_flop_positions, *miss, 10);
+
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    }
 }
 
 // ***********************************************************
@@ -245,11 +265,17 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
 
-    kmeansDOD.cluster_registers_with_rtree_parallel(flip_flop_positions, *miss, 10);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
 
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+        register_clustering::KmeansDataOrientedDesign kmeansDOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+
+        kmeansDOD.cluster_registers_with_rtree_parallel(flip_flop_positions, *miss, 10);
+
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+
+    }
 }

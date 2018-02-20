@@ -38,21 +38,36 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<ge
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
+
+//        std::cout<< "Inicializando RTre"<<std::endl;
+//        metric.start();
         for (auto & cluster : clusters_)
         {
             clusters_rtree.insert(rtree_node(clusterCenters_[cluster].first, cluster));
             clusterElements_[cluster].clear();
         }
 
+//        metric.end();
+//        metric.print_result();
+//        std::cout<< "encontrando cluster"<<std::endl;
+//        metric.start();
+
 //        for (auto & flip_flop : flip_flops)
+        std::vector<rtree_node> closest_nodes;
         for(auto flip_flop_it = flip_flops.begin(); flip_flop_it != flip_flops.end(); ++flip_flop_it)
         {
             auto flip_flop = *flip_flop_it;
-            std::vector<rtree_node> closest_nodes;
+            closest_nodes.clear();
             clusters_rtree.query(boost::geometry::index::nearest(flip_flop, 1), std::back_inserter(closest_nodes));
             auto closest_cluster = closest_nodes.front().second;
             clusterElements_[closest_cluster].push_back(flip_flop);
         }
+
+//        metric.end();
+//        metric.print_result();
+//        std::cout<< "Atualizando centro do cluster "<<std::endl;
+//        metric.start();
+
 //        for (auto & cluster : clusters_)
         for(auto cluster_it = clusters_.begin(); cluster_it != clusters_.end(); ++cluster_it)
         {
@@ -70,6 +85,8 @@ void KmeansDataOrientedDesign::cluster_registers_with_rtree(const std::vector<ge
                 clusterCenters_[cluster].first = geometry::Point(x_c, y_c);
             }
         }
+//        metric.end();
+//        metric.print_result();
     }
     metric.end();
 }

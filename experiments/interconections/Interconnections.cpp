@@ -148,40 +148,9 @@ void interconnection_estimate_parallel_ood(design::Design &design, Metric &metri
 
 void interconnection_estimate_sequential_dod(design::Design &design, Metric &metric)
 {
-    metric.start();
-
     using Net = ophidian::circuit::Net;
-    for(auto net_it = design.netlist().begin(Net()); net_it != design.netlist().end(Net()); ++net_it)
-    {
-        auto net = *net_it;
-        std::vector<util::LocationDbu> pin_positions;
-        pin_positions.reserve(design.netlist().pins(net).size());
-        for(auto pin : design.netlist().pins(net))
-        {
-            if(design.netlist().cell(pin) == ophidian::circuit::Cell())
-            {
-                //Pad
-                auto padInput = design.netlist().input(pin);
-                auto padOutput = design.netlist().output(pin);
-                auto location = (padInput == ophidian::circuit::Input()) ? design.placement().outputPadLocation(padOutput) : design.placement().inputPadLocation(padInput);
-                pin_positions.push_back(location);
-            }
-            else {
-                //Cell Pin
-                pin_positions.push_back(design.placementMapping().location(pin));
-            }
-        }
-        interconnection::hpwl(pin_positions);
-    }
+    ophidian::entity_system::Property<Net, std::vector<util::LocationDbu> > net2Pin( design.netlist().makeProperty<std::vector<util::LocationDbu> >(Net()) );
 
-    metric.end();
-}
-
-void interconnection_estimate_parallel_dod(design::Design &design, Metric &metric)
-{
-    metric.start();
-
-    using Net = ophidian::circuit::Net;
 #pragma omp parallel for
     for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
     {
@@ -196,14 +165,63 @@ void interconnection_estimate_parallel_dod(design::Design &design, Metric &metri
                 auto padInput = design.netlist().input(pin);
                 auto padOutput = design.netlist().output(pin);
                 auto location = (padInput == ophidian::circuit::Input()) ? design.placement().outputPadLocation(padOutput) : design.placement().inputPadLocation(padInput);
-                pin_positions.push_back(location);
+//                pin_positions.push_back(location);
+                net2Pin[net].push_back(location);
             }
             else {
                 //Cell Pin
-                pin_positions.push_back(design.placementMapping().location(pin));
+//                pin_positions.push_back(design.placementMapping().location(pin));
+                net2Pin[net].push_back(design.placementMapping().location(pin));
             }
         }
-        interconnection::hpwl(pin_positions);
+    }
+
+    metric.start();
+
+    for(auto net_it = design.netlist().begin(Net()); net_it != design.netlist().end(Net()); ++net_it)
+    {
+        interconnection::hpwl(net2Pin[ *net_it ]);
+    }
+
+    metric.end();
+}
+
+void interconnection_estimate_parallel_dod(design::Design &design, Metric &metric)
+{
+    using Net = ophidian::circuit::Net;
+    ophidian::entity_system::Property<Net, std::vector<util::LocationDbu> > net2Pin( design.netlist().makeProperty<std::vector<util::LocationDbu> >(Net()) );
+
+#pragma omp parallel for
+    for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
+    {
+        auto net = *net_it;
+        std::vector<util::LocationDbu> pin_positions;
+        pin_positions.reserve(design.netlist().pins(net).size());
+        for(auto pin : design.netlist().pins(net))
+        {
+            if(design.netlist().cell(pin) == ophidian::circuit::Cell())
+            {
+                //Pad
+                auto padInput = design.netlist().input(pin);
+                auto padOutput = design.netlist().output(pin);
+                auto location = (padInput == ophidian::circuit::Input()) ? design.placement().outputPadLocation(padOutput) : design.placement().inputPadLocation(padInput);
+//                pin_positions.push_back(location);
+                net2Pin[net].push_back(location);
+            }
+            else {
+                //Cell Pin
+//                pin_positions.push_back(design.placementMapping().location(pin));
+                net2Pin[net].push_back(design.placementMapping().location(pin));
+            }
+        }
+    }
+
+    metric.start();
+
+#pragma omp parallel for
+    for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
+    {
+        interconnection::hpwl(net2Pin[ *net_it ]);
     }
 
     metric.end();

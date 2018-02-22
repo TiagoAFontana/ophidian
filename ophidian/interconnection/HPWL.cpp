@@ -38,5 +38,21 @@ double hpwl(const std::vector< ophidian::util::LocationDbu > & points){
     }
     return ophidian::geometry::ManhattanDistance()(lower, upper);
 }
+
+double hpwl(std::vector<util::LocationDbu>::const_iterator begin, std::vector<util::LocationDbu>::const_iterator end){
+    geometry::Point lower( std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+    geometry::Point upper( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() );
+
+    for(auto it = begin; it != end; ++it)
+    {
+        auto p = *it;
+        lower.x(std::min(lower.x(), units::unit_cast<double>(p.x())));
+        lower.y(std::min(lower.y(), units::unit_cast<double>(p.y())));
+        upper.x(std::max(upper.x(), units::unit_cast<double>(p.x())));
+        upper.y(std::max(upper.y(), units::unit_cast<double>(p.y())));
+    }
+    return ophidian::geometry::ManhattanDistance()(lower, upper);
+}
+
 } // namespace interconnection
 } // namespace ophidian

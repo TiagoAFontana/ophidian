@@ -23,6 +23,7 @@
 #define OPHIDIAN_INTERCONNECTION_HPWL_H
 
 #include <ophidian/util/Units.h>
+#include <ophidian/util/Range.h>
 
 namespace ophidian
 {
@@ -35,6 +36,7 @@ namespace interconnection
  *   \param points A vector of points.
  **/
 double hpwl(const std::vector< ophidian::util::LocationDbu > & points);
+double hpwl(std::vector<util::LocationDbu>::const_iterator begin, std::vector<util::LocationDbu>::const_iterator end);
 } // namespace interconnection
 } // namespace ophidian
 

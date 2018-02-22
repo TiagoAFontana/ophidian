@@ -21,7 +21,7 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::register_clustering;
 
-#define ITERATIONS 10
+#define ITERATIONS 1
 
 // ***********************************************************
 //  Object-Oriented Design

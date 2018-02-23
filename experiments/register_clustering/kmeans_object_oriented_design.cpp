@@ -112,18 +112,11 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
     for (int i = 0; i < iterations; ++i)
     {
         rtree clusters_rtree;
-
-//        std::cout<< "Inicializando RTre"<<std::endl;
-//        metric.start();
         for (ClusterOOD & cluster : clusters_)
         {
             clusters_rtree.insert(rtree_node(cluster.center(), &cluster));
             cluster.clear();
         }
-//        metric.end();
-//        metric.print_result();
-//        std::cout<< "encontrando cluster"<<std::endl;
-//        metric.start();
         std::vector<rtree_node> closest_nodes;
         for(auto flip_flop_it = flip_flops.begin(); flip_flop_it != flip_flops.end(); ++flip_flop_it)
         {
@@ -133,10 +126,6 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
             ClusterOOD * closest_cluster = closest_nodes.front().second;
             closest_cluster->insertElement(flip_flop);
         }
-//        metric.end();
-//        metric.print_result();
-//        std::cout<< "Atualizando centro do cluster "<<std::endl;
-//        metric.start();
         for(auto cluster_it = clusters_.begin(); cluster_it != clusters_.end(); ++cluster_it)
         {
             auto cluster = *cluster_it;
@@ -153,8 +142,6 @@ void KmeansObjectOrientedDesign::cluster_registers_with_rtree(std::vector<FlipFl
                 cluster.center(geometry::Point(x_c, y_c));
             }
         }
-//        metric.end();
-//        metric.print_result();
     }
     metric.end();
 }

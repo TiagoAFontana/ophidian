@@ -32,9 +32,16 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
 {
     std::cout << "Test Interconection sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
+
+
     interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -59,6 +66,8 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential OOD
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
+    interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
+
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_sequential_ood(*design_, *miss);
@@ -77,9 +86,15 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD r
 {
     std::cout << "Test Interconection parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
+
     interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -103,6 +118,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel OOD c
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_parallel_ood(*design_, *miss);
@@ -124,8 +140,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
     std::cout << "Test Interconection sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -149,6 +169,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_sequential_dod(*design_, *miss);
@@ -168,8 +189,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD r
     std::cout << "Test Interconection parallel DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -193,6 +218,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD c
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_parallel_dod(*design_, *miss);
@@ -213,13 +239,17 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD c
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD runtime", "[problem2][DOD_ordered][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD Ordered runtime", "[problem2][DOD_ordered][sequential][runtime]")
 {
     std::cout << "Test Interconection sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     interconnection_estimate::interconnection_estimate_sequential_dod_ordered(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_dod_ordered(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -228,9 +258,9 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
 //  -- sequential
 //      -- cache miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD cache misses", "[problem2][DOD_ordered][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD Ordered cache misses", "[problem2][DOD_ordered][sequential][miss]")
 {
-    std::cout << "Test Interconection sequential DOD cache misses" << std::endl;
+    std::cout << "Test Interconection sequential DOD Ordered cache misses" << std::endl;
     int PAPI_events[] = {
         PAPI_L1_DCM,
         PAPI_L1_ICM,
@@ -243,6 +273,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_sequential_dod_ordered(*design_, *miss);
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_sequential_dod_ordered(*design_, *miss);
@@ -257,13 +288,17 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD runtime", "[problem2][DOD_ordered][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD Ordered runtime", "[problem2][DOD_ordered][parallel][runtime]")
 {
-    std::cout << "Test Interconection parallel DOD runtime" << std::endl;
+    std::cout << "Test Interconection parallel DOD Ordered runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     interconnection_estimate::interconnection_estimate_parallel_dod_ordered(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_dod_ordered(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -272,9 +307,9 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD r
 //  -- parallel
 //      -- cache miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD cache misses", "[problem2][DOD_ordered][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD Ordered cache misses", "[problem2][DOD_ordered][parallel][miss]")
 {
-    std::cout << "Test Interconection parallel DOD cache misses" << std::endl;
+    std::cout << "Test Interconection parallel DOD Ordered cache misses" << std::endl;
     int PAPI_events[] = {
         PAPI_L1_DCM,
         PAPI_L1_ICM,
@@ -287,6 +322,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD c
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_parallel_dod_ordered(*design_, *miss);
     for (int i = 0; i < ITERATIONS; ++i)
     {
         interconnection_estimate::interconnection_estimate_parallel_dod_ordered(*design_, *miss);

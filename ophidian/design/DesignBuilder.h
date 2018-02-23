@@ -27,6 +27,7 @@
 #include <ophidian/placement/Lef2Library.h>
 #include <ophidian/circuit/Def2LibraryMapping.h>
 #include <ophidian/circuit/Verilog2Netlist.h>
+#include <ophidian/circuit/verilog2LibraryMapping.h>
 
 #include "Design.h"
 

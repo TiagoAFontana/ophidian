@@ -25,106 +25,114 @@
 #include <ophidian/placement/Library.h>
 #include <ophidian/circuit/LibraryMapping.h>
 #include <ophidian/standard_cell/StandardCells.h>
+#include <ophidian/placement/PlacementMapping.h>
 
 namespace ophidian
 {
 /// Design describing a whole system
-    namespace design
+namespace design
+{
+
+class Design
+{
+public:
+
+	//! Design Constructor
+	/*!
+	   \brief Constructs a design system with no properties
+	 */
+	Design();
+
+	//! Design Destructor
+	/*!
+	   \brief Destroys the design system, including its properties.
+	 */
+	~Design();
+
+	//! netlist getter
+	/*!
+	   \brief Get the netlist.
+	   \return Netlist.
+	 */
+	circuit::Netlist & netlist()
+	{
+		return mNetlist;
+	}
+
+	//! floorplan getter
+	/*!
+	   \brief Get the floorplan.
+	   \return Floorplan.
+	 */
+	floorplan::Floorplan & floorplan()
+	{
+		return mFloorplan;
+	}
+
+	//! placement getter
+	/*!
+	   \brief Get the placement.
+	   \return Placement.
+	 */
+	placement::Placement & placement()
+	{
+		return mPlacement;
+	}
+
+	//! standardCells getter
+	/*!
+	   \brief Get standardCells.
+	   \return StandardCells.
+	 */
+	standard_cell::StandardCells & standardCells()
+	{
+		return mStandardCells;
+	}
+
+	//! library getter
+	/*!
+	   \brief Get the library.
+	   \return Library.
+	 */
+	placement::Library & library()
+	{
+		return mLibrary;
+	}
+
+	//! libraryMapping getter
+	/*!
+	   \brief Get the libraryMapping.
+	   \return LibraryMapping.
+	 */
+	circuit::LibraryMapping & libraryMapping()
+	{
+		return mLibraryMapping;
+	}
+
+    //! placementMapping getter
+    /*!
+       \brief Get the placementMapping.
+       \return placementMapping.
+     */
+    placement::PlacementMapping & placementMapping()
     {
-        class Design
-        {
-        public:
+        return mPlacementMapping;
+    }
 
-            //! Design Constructor
+private:
 
-            /*!
-               \brief Constructs a design system with no properties
-             */
-            Design();
+	circuit::Netlist mNetlist;
+	floorplan::Floorplan mFloorplan;
+	placement::Placement mPlacement;
+	standard_cell::StandardCells mStandardCells;
+	placement::Library mLibrary;
+	circuit::LibraryMapping mLibraryMapping;
+    placement::PlacementMapping mPlacementMapping;
 
-            //! Design Destructor
+};
 
-            /*!
-               \brief Destroys the design system, including its properties.
-             */
-            ~Design();
+} //namespace design
 
-            //! netlist getter
-
-            /*!
-               \brief Get the netlist.
-               \return Netlist.
-             */
-            circuit::Netlist & netlist()
-            {
-                return mNetlist;
-            }
-
-            //! floorplan getter
-
-            /*!
-               \brief Get the floorplan.
-               \return Floorplan.
-             */
-            floorplan::Floorplan & floorplan()
-            {
-                return mFloorplan;
-            }
-
-            //! placement getter
-
-            /*!
-               \brief Get the placement.
-               \return Placement.
-             */
-            placement::Placement & placement()
-            {
-                return mPlacement;
-            }
-
-            //! standardCells getter
-
-            /*!
-               \brief Get standardCells.
-               \return StandardCells.
-             */
-            standard_cell::StandardCells & standardCells()
-            {
-                return mStandardCells;
-            }
-
-            //! library getter
-
-            /*!
-               \brief Get the library.
-               \return Library.
-             */
-            placement::Library & library()
-            {
-                return mLibrary;
-            }
-
-            //! libraryMapping getter
-
-            /*!
-               \brief Get the libraryMapping.
-               \return LibraryMapping.
-             */
-            circuit::LibraryMapping & libraryMapping()
-            {
-                return mLibraryMapping;
-            }
-
-        private:
-
-            circuit::Netlist             mNetlist;
-            floorplan::Floorplan         mFloorplan;
-            placement::Placement         mPlacement;
-            standard_cell::StandardCells mStandardCells;
-            placement::Library           mLibrary;
-            circuit::LibraryMapping      mLibraryMapping;
-        };
-    }     //namespace design
-}     //namespace ophidian
+} //namespace ophidian
 
 #endif // OPHIDIAN_DESIGN_DESIGN_H

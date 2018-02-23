@@ -29,60 +29,73 @@ namespace ophidian
 {
     namespace placement
     {
-        class Placement
-        {
-        public:
+class Placement
+{
+public:
+    using CellLocationIterator = entity_system::Property<circuit::Cell, util::LocationDbu>::ContainerType::const_iterator;
+	//! Placement Constructor
+	/*!
+       \brief Constructs a placement system with no properties.
+       \param netlist Circuit netlist.
+	 */
+	Placement(const circuit::Netlist & netlist);
 
-            //! Placement Constructor
+	//! Placement Destructor
+	/*!
+	   \brief Destroys the placement system, including its properties.
+	 */
+	~Placement();
 
-            /*!
-               \brief Constructs a placement system with no properties.
-               \param netlist Circuit netlist.
-             */
-            Placement(const circuit::Netlist & netlist);
+	//! Places a cell
+	/*!
+	   \brief Places a cell by setting its location
+	   \param cell Cell to be placed
+	   \param location LocationDbu of the lower left corner of the cell.
+	 */
+	void placeCell(const circuit::Cell & cell, const util::LocationDbu & location);
 
-            //! Placement Destructor
+	//! LocationDbu getter
+	/*!
+	   \brief Get the location of a given cell.
+	   \param cell Cell entity to get the location.
+	   \return LocationDbu of the cell.
+	 */
+    util::LocationDbu cellLocation(const circuit::Cell & cell) const {
+        return mCellLocations[cell];
+	}
 
-            /*!
-               \brief Destroys the placement system, including its properties.
-             */
-            ~Placement();
+    void placeInputPad(const circuit::Input & input, const util::LocationDbu & location);
 
-            //! Places a cell
+    util::LocationDbu inputPadLocation(const circuit::Input & input) const;
 
-            /*!
-               \brief Places a cell by setting its location
-               \param cell Cell to be placed
-               \param location LocationDbu of the lower left corner of the cell.
-             */
-            void placeCell(const circuit::Cell & cell, const util::LocationDbu & location);
+    void placeOutputPad(const circuit::Output & output, const util::LocationDbu &location);
 
-            //! LocationDbu getter
+    util::LocationDbu outputPadLocation(const circuit::Output & output) const;
 
-            /*!
-               \brief Get the location of a given cell.
-               \param cell Cell entity to get the location.
-               \return LocationDbu of the cell.
-             */
-            util::LocationDbu cellLocation(const circuit::Cell & cell) const
-            {
-                return mCellLocations[cell];
-            }
+    //! Rows iterator
+    /*!
+       \return Range iterator for the Cells Locations.
+     */
+    ophidian::util::Range<CellLocationIterator> cellLocationRange() const
+    {
+        return util::Range<CellLocationIterator>(mCellLocations.begin(), mCellLocations.end());
+    }
 
-            void placeInputPad(const circuit::Input & input, const util::LocationDbu & location);
+    void fixLocation(const circuit::Cell & cell, bool fixed);
 
-            util::LocationDbu inputPadLocation(const circuit::Input & input) const;
+    bool isFixed(const circuit::Cell & cell) const {
+        return mCellFixed[cell];
+    }
 
-            void placeOutputPad(const circuit::Output & output, const util::LocationDbu & location);
+private:
+    entity_system::Property<circuit::Cell, util::LocationDbu> mCellLocations;
+    entity_system::Property<circuit::Input, util::LocationDbu> mInputLocations;
+    entity_system::Property<circuit::Output, util::LocationDbu> mOutputLocations;
+    entity_system::Property<circuit::Cell, bool> mCellFixed;
+};
 
-            util::LocationDbu outputPadLocation(const circuit::Output & output) const;
+} //namespace placement
 
-        private:
-            entity_system::Property <circuit::Cell, util::LocationDbu>   mCellLocations;
-            entity_system::Property <circuit::Input, util::LocationDbu>  mInputLocations;
-            entity_system::Property <circuit::Output, util::LocationDbu> mOutputLocations;
-        };
-    }     //namespace placement
-}     //namespace ophidian
+} //namespace ophidian
 
 #endif // OPHIDIAN_PLACEMENT_PLACEMENT_H

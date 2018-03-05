@@ -3,10 +3,20 @@
 
 #include <ophidian/entity_system/EntitySystem.h>
 
-class MyEntity : public ophidian::entity_system::EntityBase {
+class MyEntity : public ophidian::entity_system::EntityBase
+{
 public:
-    MyEntity();
-    MyEntity(uint32_t id, ophidian::entity_system::EntitySystemBase * system);
+    MyEntity(){
+    }
+    MyEntity(uint32_t id, ophidian::entity_system::EntitySystemBase * system){
+    }
+};
+
+class MyDummyProperty
+{
+public:
+    MyDummyProperty() {
+    }
 };
 
 #endif // PROPERTY_TEST_H

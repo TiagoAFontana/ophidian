@@ -36,6 +36,8 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::chip_boundaries;
 
+#define ITERATIONS 5
+
 TEST_CASE("papi", "[PAPI]")
 {
 
@@ -62,8 +64,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential OO
     std::cout << "Test Chip Boundaries sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     chip_boundaries::chip_boundaries_sequential_ood(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_sequential_ood(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -91,8 +97,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential OO
 
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     chip_boundaries::chip_boundaries_sequential_ood(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_sequential_ood(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -106,8 +116,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries parallel OOD 
     std::cout << "Test Chip Boundaries parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     chip_boundaries::chip_boundaries_parallel_ood(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_parallel_ood(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -132,8 +146,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries parallel OOD 
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
     chip_boundaries::chip_boundaries_parallel_ood(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_parallel_ood(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 //________________________________________________________________________________________________________________________________
 
@@ -148,8 +166,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential DO
     std::cout << "Test Chip Boundaries sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
     chip_boundaries::chip_boundaries_sequential_dod(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_sequential_dod(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -174,11 +196,13 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries sequential DO
     };
 
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-
     chip_boundaries::chip_boundaries_sequential_dod(*design_, *miss);
-    miss->print_result();
-
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_sequential_dod(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -191,9 +215,14 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries parallel DOD 
 {
     std::cout << "Test Chip Boundaries parallel DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
+
     chip_boundaries::chip_boundaries_parallel_dod(*design_, *runtime);
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_parallel_dod(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -217,7 +246,12 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Chip Boundaries parallel DOD 
         PAPI_L3_TCM
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+
     chip_boundaries::chip_boundaries_parallel_dod(*design_, *miss);
-    miss->print_result();
-    miss->print_file_result(Experiment::getInstance().getOutput_file());
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        chip_boundaries::chip_boundaries_parallel_dod(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }

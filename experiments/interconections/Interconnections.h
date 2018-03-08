@@ -54,6 +54,9 @@ void interconnection_estimate_parallel_dod(ophidian::design::Design &design, Met
 void interconnection_estimate_sequential_dod_ordered(ophidian::design::Design &design, Metric &metric);
 void interconnection_estimate_parallel_dod_ordered(ophidian::design::Design &design, Metric &metric);
 
+void interconnection_estimate_sequential_dod_property_ordered(ophidian::design::Design &design, Metric &metric);
+void interconnection_estimate_parallel_dod_property_ordered(ophidian::design::Design &design, Metric &metric);
+
 
 } // namespace interconnection_estimate
 } // namespace experiments

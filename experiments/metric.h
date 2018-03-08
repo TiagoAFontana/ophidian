@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string.h>
 #include <assert.h>     /* assert */
+#include <stdlib.h>     /* calloc, exit, free */
 
 namespace ophidian
 {
@@ -21,6 +22,39 @@ public:
     virtual void end() = 0;
     virtual void print_result() = 0;
     virtual void print_file_result(std::string filename) = 0;
+
+    void cacheFlush(){
+
+        const PAPI_hw_info_t *hwinfo = NULL;
+        int retval;
+        if((retval = PAPI_library_init(PAPI_VER_CURRENT)) != PAPI_VER_CURRENT )
+        {
+            printf("Library initialization error! \n");
+            exit(1);
+        }
+
+        /* Get hardware info*/
+        if ((hwinfo = PAPI_get_hardware_info()) == NULL)
+        {
+            printf("PAPI_get_hardware_info error! \n");
+            exit(1);
+        }
+        /* when there is an error, PAPI_get_hardware_info returns NULL */
+
+        auto levels = hwinfo->mem_hierarchy.levels;
+        auto cache = hwinfo->mem_hierarchy.level[levels -1].cache;
+        int cacheSize;// = 6144 * 1024; //6MB
+        cacheSize = cache->size;
+
+#pragma optimize( "", off )
+        int numInts = (2*cacheSize) / sizeof(int);
+        std::vector<int> second (numInts,100);
+        for (int i = 0; i < numInts; ++i)
+        {
+            second[i] = 0;
+        }
+#pragma optimize( "", on )
+    }
 };
 
 class Runtime : public Metric
@@ -28,6 +62,7 @@ class Runtime : public Metric
     std::chrono::high_resolution_clock::time_point time_start, time_end;
 public:
     void start(){
+        cacheFlush();
         time_start = std::chrono::high_resolution_clock::now();
     }
 
@@ -94,6 +129,7 @@ public:
     }
 
     void start(){
+        cacheFlush();
         PAPI_reset(*PAPI_events);
         assert(PAPI_start_counters( PAPI_events, events_size ) == PAPI_OK);
     }

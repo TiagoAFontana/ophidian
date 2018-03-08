@@ -1,6 +1,9 @@
 #include "Interconnections.h"
 #include <ophidian/interconnection/HPWL.h>
-#include <ophidian/interconnection/STWL.h>
+//#include <ophidian/interconnection/STWL.h>
+
+#include <ophidian/entity_system/PropertyGrouped.h>
+#include <ophidian/entity_system/Association.h>
 namespace ophidian
 {
 namespace experiments
@@ -348,6 +351,95 @@ void interconnection_estimate_parallel_dod_ordered(design::Design &design, Metri
     for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
     {
         interconnection::hpwl(netPinsRange[*net_it].first, netPinsRange[*net_it].second);
+    }
+
+    metric.end();
+}
+
+//=================================================================================================
+//===================================== DOD Property Ordered ======================================
+//=================================================================================================
+void interconnection_estimate_sequential_dod_property_ordered(design::Design &design, Metric &metric)
+{
+    using Net = ophidian::circuit::Net;
+    using Pin = ophidian::circuit::Pin;
+    using Location = util::LocationDbu;
+    ophidian::entity_system::Property<Pin, Location > pinPosition( design.netlist().makeProperty<Location>(Pin()) );
+
+#pragma omp parallel for
+    for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
+    {
+        auto net = *net_it;
+        for(auto pin : design.netlist().pins(net))
+        {
+            if(design.netlist().cell(pin) == ophidian::circuit::Cell())
+            {
+                //Pad
+                auto padInput = design.netlist().input(pin);
+                auto padOutput = design.netlist().output(pin);
+                auto location = (padInput == ophidian::circuit::Input()) ? design.placement().outputPadLocation(padOutput) : design.placement().inputPadLocation(padInput);
+                pinPosition[pin] = location;
+            }
+            else {
+                //Cell Pin
+                pinPosition[pin] = design.placementMapping().location(pin);
+            }
+        }
+    }
+
+    const entity_system::EntitySystem <Net> & nets = design.netlist().getNets();
+    const entity_system::Association<Net, Pin> & netPins = design.netlist().getNetPins();
+
+    ophidian::entity_system::PropertyGrouped<Net, Pin, Location> propGrouped(nets, pinPosition, netPins);
+
+    metric.start();
+
+    for(auto net_it = nets.begin(); net_it != nets.end(); ++net_it)
+    {
+        interconnection::hpwl(propGrouped.begin(*net_it), propGrouped.end(*net_it));
+    }
+
+    metric.end();
+}
+
+void interconnection_estimate_parallel_dod_property_ordered(ophidian::design::Design &design, Metric &metric){
+    using Net = ophidian::circuit::Net;
+    using Pin = ophidian::circuit::Pin;
+    using Location = util::LocationDbu;
+    ophidian::entity_system::Property<Pin, Location > pinPosition( design.netlist().makeProperty<Location>(Pin()) );
+
+#pragma omp parallel for
+    for(auto net_it = design.netlist().begin(Net()); net_it < design.netlist().end(Net()); ++net_it)
+    {
+        auto net = *net_it;
+        for(auto pin : design.netlist().pins(net))
+        {
+            if(design.netlist().cell(pin) == ophidian::circuit::Cell())
+            {
+                //Pad
+                auto padInput = design.netlist().input(pin);
+                auto padOutput = design.netlist().output(pin);
+                auto location = (padInput == ophidian::circuit::Input()) ? design.placement().outputPadLocation(padOutput) : design.placement().inputPadLocation(padInput);
+                pinPosition[pin] = location;
+            }
+            else {
+                //Cell Pin
+                pinPosition[pin] = design.placementMapping().location(pin);
+            }
+        }
+    }
+
+    const entity_system::EntitySystem <Net> & nets = design.netlist().getNets();
+    const entity_system::Association<Net, Pin> & netPins = design.netlist().getNetPins();
+
+    ophidian::entity_system::PropertyGrouped<Net, Pin, Location> propGrouped(nets, pinPosition, netPins);
+
+    metric.start();
+
+#pragma omp parallel for
+    for(auto net_it = nets.begin(); net_it != nets.end(); ++net_it)
+    {
+        interconnection::hpwl(propGrouped.begin(*net_it), propGrouped.end(*net_it));
     }
 
     metric.end();

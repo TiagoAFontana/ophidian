@@ -17,10 +17,10 @@ file(GLOB_RECURSE ophidian_run_experiments_SRC
 
 find_package(PAPI)
 
-SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-SET(BUILD_SHARED_LIBRARIES OFF)
-SET(CMAKE_EXE_LINKER_FLAGS "-static")
-set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+#SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+#SET(BUILD_SHARED_LIBRARIES OFF)
+#SET(CMAKE_EXE_LINKER_FLAGS "-static")
+#set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 # Add Catch lib interface
 # add_library(Catch INTERFACE)
@@ -33,15 +33,19 @@ add_executable(ophidian_experiments ${ophidian_run_experiments_SRC})
 target_link_libraries(ophidian_experiments PUBLIC 
     Catch
     PAPI
-    ophidian_circuit 
-    ophidian_design 
-    ophidian_entity_system 
-    ophidian_floorplan 
-    ophidian_geometry 
-    ophidian_interconnection 
-    ophidian_parser 
-    ophidian_placement 
-    ophidian_standard_cell 
+    ophidian_circuit_static
+    ophidian_design_static
+    ophidian_entity_system_static
+    ophidian_floorplan_static
+    ophidian_geometry_static
+    ophidian_interconnection_static
+    ophidian_parser_static
+    ophidian_placement_static
+    ophidian_standard_cell_static
+)
+
+set_target_properties(ophidian_experiments PROPERTIES
+    LINK_FLAGS "-static -static-libgcc -static-libstdc++ -pthread"
 )
 
 # Add namespace directories for lib generation

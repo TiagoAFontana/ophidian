@@ -73,22 +73,22 @@ public:
         return mProperties[Parent::notifier()->id(entity)];
     }
 
-    typename ContainerType::iterator begin()
+    virtual typename ContainerType::iterator begin()
     {
         return mProperties.begin();
     }
 
-    typename ContainerType::iterator end()
+    virtual typename ContainerType::iterator end()
     {
         return mProperties.end();
     }
 
-    typename ContainerType::const_iterator begin() const
+    virtual typename ContainerType::const_iterator begin() const
     {
         return mProperties.begin();
     }
 
-    typename ContainerType::const_iterator end() const
+    virtual typename ContainerType::const_iterator end() const
     {
         return mProperties.end();
     }

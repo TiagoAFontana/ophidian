@@ -330,3 +330,107 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD O
         miss->print_file_result(Experiment::getInstance().getOutput_file());
     }
 }
+
+//________________________________________________________________________________________________________________________________
+// ***********************************************************
+//  Data-Oriented Design PROPERTY ORDERED
+// ***********************************************************
+//________________________________________________________________________________________________________________________________
+
+// ***********************************************************
+//  Data-Oriented Design PROPERTY ORDERED
+// ***********************************************************
+//  -- sequential
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD Property Ordered runtime", "[problem2][DOD_property_ordered][sequential][runtime]")
+{
+    std::cout << "Test Interconection sequential DOD Property Ordered runtime" << std::endl;
+    std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
+    interconnection_estimate::interconnection_estimate_sequential_dod_property_ordered(*design_, *runtime);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_dod_property_ordered(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
+}
+
+// ***********************************************************
+//  Data-Oriented Design PROPERTY ORDERED
+// ***********************************************************
+//  -- sequential
+//      -- cache miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection sequential DOD Property Ordered cache misses", "[problem2][DOD_property_ordered][sequential][miss]")
+{
+    std::cout << "Test Interconection sequential DOD Property Ordered cache misses" << std::endl;
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_sequential_dod_property_ordered(*design_, *miss);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_sequential_dod_property_ordered(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
+}
+
+// ***********************************************************
+//  Data-Oriented Design PROPERTY ORDERED
+// ***********************************************************
+//  -- parallel
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD Property Ordered runtime", "[problem2][DOD_property_ordered][parallel][runtime]")
+{
+    std::cout << "Test Interconection parallel DOD Property Ordered runtime" << std::endl;
+    std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
+    interconnection_estimate::interconnection_estimate_parallel_dod_property_ordered(*design_, *runtime);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_dod_property_ordered(*design_, *runtime);
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
+}
+
+// ***********************************************************
+//  Data-Oriented Design PROPERTY ORDERED
+// ***********************************************************
+//  -- parallel
+//      -- cache miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test Interconection parallel DOD Property Ordered cache misses", "[problem2][DOD_property_ordered][parallel][miss]")
+{
+    std::cout << "Test Interconection parallel DOD Property Ordered cache misses" << std::endl;
+    int PAPI_events[] = {
+        PAPI_L1_DCM,
+        PAPI_L1_ICM,
+        PAPI_L1_TCM,
+
+        PAPI_L2_DCM,
+        PAPI_L2_ICM,
+        PAPI_L2_TCM,
+
+        PAPI_L3_TCM
+    };//Please change this according with your cpu architecture.
+    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
+    interconnection_estimate::interconnection_estimate_parallel_dod_property_ordered(*design_, *miss);
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        interconnection_estimate::interconnection_estimate_parallel_dod_property_ordered(*design_, *miss);
+        miss->print_result();
+        miss->print_file_result(Experiment::getInstance().getOutput_file());
+    }
+}

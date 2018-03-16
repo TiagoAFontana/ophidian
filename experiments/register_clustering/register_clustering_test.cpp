@@ -23,6 +23,7 @@ using namespace ophidian::experiments::register_clustering;
 
 #define ITERATIONS 5
 
+
 // ***********************************************************
 //  Object-Oriented Design
 // ***********************************************************
@@ -36,11 +37,16 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
+    using ff = ophidian::experiments::register_clustering::FlipFlopF;
+    std::vector< unique_ptr > flip_flops;
+
     flip_flops.reserve(flip_flop_positions.size());
+
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+
+        flip_flops.push_back( unique_ptr(new ff(p)) );
     }
 
     kmeansOOD.cluster_registers_with_rtree(flip_flops, *runtime, 10);
@@ -77,12 +83,14 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
+    using ff = ophidian::experiments::register_clustering::FlipFlopF;
+    std::vector< unique_ptr > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
 
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+        flip_flops.push_back(unique_ptr(new ff(p)));
     }
 
     kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
@@ -110,11 +118,13 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
+    using ff = ophidian::experiments::register_clustering::FlipFlopF;
+    std::vector< unique_ptr > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+        flip_flops.push_back(unique_ptr(new ff(p)));
     }
 
     kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *runtime, 10);
@@ -151,11 +161,13 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 
     register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    std::vector<ophidian::experiments::register_clustering::FlipFlop> flip_flops;
+    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
+    using ff = ophidian::experiments::register_clustering::FlipFlopF;
+    std::vector< unique_ptr > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(ophidian::experiments::register_clustering::FlipFlop(p));
+        flip_flops.push_back(unique_ptr(new ff(p)));
     }
 
     kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);

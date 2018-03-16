@@ -104,7 +104,8 @@ public:
         if (ofs.is_open())
         {
 //            ofs << std::chrono::duration_cast<std::chrono::milliseconds>(total_time).count() << " ms\n";
-            ofs << std::chrono::duration_cast<std::chrono::microseconds>(total_time).count() << " us\n";
+//            ofs << std::chrono::duration_cast<std::chrono::microseconds>(total_time).count() << " us\n";
+            ofs << std::chrono::duration_cast<std::chrono::nanoseconds>(total_time).count() << " ns\n";
         }
         else {
             std::cout << "Open file error!!" << std::endl;

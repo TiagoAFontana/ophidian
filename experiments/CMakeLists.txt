@@ -11,8 +11,17 @@
 
 # Fetch test files recursevely
 file(GLOB_RECURSE ophidian_run_experiments_SRC  
-    "*.cpp"
-    "*.h"
+#    "*.cpp"
+#    "*.h"
+    "experiment.*"
+    "metric.h"
+    "main.cpp"
+#    "./chip_boundaries/*.cpp"
+#    "./chip_boundaries/*.h"
+#    "./interconections/*.h"
+#    "./interconections/*.cpp"
+    "./register_clustering/*.h"
+    "./register_clustering/*.cpp"
 )
 
 find_package(PAPI)
@@ -61,7 +70,7 @@ set_target_properties(ophidian_experiments PROPERTIES
 
 message("Creating symlink for test files")
 execute_process(
-    COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/test/input_files ${PROJECT_BINARY_DIR}/experiments/.
+    COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/../input_files ${PROJECT_BINARY_DIR}/experiments/.
     COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/experiments/run.sh ${PROJECT_BINARY_DIR}/experiments/.
     RESULT_VARIABLE result
 )

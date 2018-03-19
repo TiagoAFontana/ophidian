@@ -5,6 +5,8 @@
 #include "kmeans_data_oriented_design.h"
 #include "kmeans_object_oriented_design.h"
 
+#include "FlipFlop.h"
+
 // PAPI_L1_DCM /*Level 1 data cache misses */
 // PAPI_L1_ICM /*Level 1 instruction cache misses */
 // PAPI_L2_DCM /*Level 2 data cache misses */
@@ -23,401 +25,80 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::register_clustering;
 
-#define ITERATIONS 10
+#define ITERATIONS 30
 
 TEST_CASE("Test size of FlipFlop", "[FF]")
 {
-    std::cout << "size of FF: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopF) <<std::endl;
-    std::cout << "size of FF0: " << sizeof(ophidian::experiments::register_clustering::FlipFlopT<0>) <<std::endl;
-    std::cout << "size of FF25: " << sizeof(ophidian::experiments::register_clustering::FlipFlopT<3>) <<std::endl;
-    std::cout << "size of FF50: " << sizeof(ophidian::experiments::register_clustering::FlipFlopT<6>) <<std::endl;
-    std::cout << "size of FF75: " << sizeof(ophidian::experiments::register_clustering::FlipFlopT<9>) <<std::endl;
-    std::cout << "size of FF100: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopT<12>) <<std::endl;
-    std::cout << "size of FF150: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopT<18>) <<std::endl;
-    std::cout << "size of FF200: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopT<24>) <<std::endl;
-    std::cout << "size of FF400: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopT<48>) <<std::endl;
-    std::cout << "size of FF600<>: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopT<72>) <<std::endl;
-    std::cout << "size of FF600 fix: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopF600) <<std::endl;
-    std::cout << "size of FFExt fix: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt) <<std::endl;
-
-
-    std::cout << "size of multibox: "<< sizeof(ophidian::geometry::MultiBox) <<std::endl;
-    std::cout << "size of Location: "<< sizeof(ophidian::util::LocationDbu) <<std::endl;
-    std::cout << "size of bool: "<< sizeof(bool) <<std::endl;
-    std::cout << "size of *standard_cell: "<< sizeof(std::unique_ptr<ophidian::standard_cell::StandardCells>) <<std::endl;
-    std::cout << "size of string: "<< sizeof("asdasdasdasd") <<std::endl;
-    std::cout << "size of *Pin: "<< sizeof(std::unique_ptr<ophidian::circuit::Pin>) <<std::endl;
-    std::cout << "size of vector[*Pin]: "<< sizeof(std::vector<std::unique_ptr<ophidian::circuit::Pin>>) <<std::endl;
-    std::vector<std::unique_ptr<ophidian::circuit::Pin>> v;
-//    v.push_back( std::make_unique<ophidian::circuit::Pin()>( ophidian::circuit::Pin()) );
-//    v.push_back( std::make_unique<ophidian::circuit::Pin()>( ophidian::circuit::Pin()) );
-//    v.push_back( std::make_unique<ophidian::circuit::Pin()>( ophidian::circuit::Pin()) );
-//    v.push_back( std::make_unique<ophidian::circuit::Pin()>( ophidian::circuit::Pin()) );
-    std::cout << "size of vector[*Pin] populado: "<< sizeof(v) <<std::endl;
+    std::cout << "size of FF: "<< sizeof(ophidian::experiments::register_clustering::FlipFlop) <<std::endl;
+    std::cout << "size of FFExt125: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt125) <<std::endl;
+    std::cout << "size of FFExt150: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt150) <<std::endl;
+    std::cout << "size of FFExt175: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt175) <<std::endl;
+    std::cout << "size of FFExt200: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt200) <<std::endl;
+    std::cout << "size of FFExt400: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt400) <<std::endl;
+    std::cout << "size of FFExt600: "<< sizeof(ophidian::experiments::register_clustering::FlipFlopExt600) <<std::endl;
 }
 
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 125%
+////**********************************************************************************************************************
 // ***********************************************************
-//  Object-Oriented Design : extra 0%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e0", "[problem3][OOD][sequential][miss][e0]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e0" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<0>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 0%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e0", "[problem3][OOD][parallel][miss][e0]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e0" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelMiss<0>(design, ff, ITERATIONS);
-}
-
-
-// ***********************************************************
-//  Object-Oriented Design : extra 400%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e400", "[problem3][OOD][sequential][miss][e400]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e400" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF400>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 400%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e400", "[problem3][OOD][parallel][miss][e400]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e400" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF400>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 600%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e600", "[problem3][OOD][sequential][miss][e600]")
-{
-    int PAPI_events[] = {
-        PAPI_L1_DCM,
-        PAPI_L1_ICM,
-        PAPI_L1_TCM,
-
-        PAPI_L2_DCM,
-        PAPI_L2_ICM,
-        PAPI_L2_TCM,
-
-        PAPI_L3_TCM
-    };//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
-
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopExt;
-    std::vector< ff > flip_flops;
-    flip_flops.reserve(flip_flop_positions.size());
-
-    for(auto p : flip_flop_positions)
-    {
-        flip_flops.push_back(ff(p));
-    }
-
-    kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
-        miss->print_result();
-        miss->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 600%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e600", "[problem3][OOD][parallel][miss][e600]")
-{
-//    std::cout << "Test Register Clustering (kmeans) parallel OOD cache misses" << std::endl;
-    int PAPI_events[] = {
-        PAPI_L1_DCM,
-        PAPI_L1_ICM,
-        PAPI_L1_TCM,
-
-        PAPI_L2_DCM,
-        PAPI_L2_ICM,
-        PAPI_L2_TCM,
-
-        PAPI_L3_TCM
-    };//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
-
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopF600;
-    std::vector< unique_ptr > flip_flops;
-    flip_flops.reserve(flip_flop_positions.size());
-    for(auto p : flip_flop_positions)
-    {
-        flip_flops.push_back(unique_ptr(new ff(p)));
-    }
-
-    kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
-        miss->print_result();
-        miss->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
-
-
-// ***********************************************************
-//  Object-Oriented Design : extra 25%
+//  Object-Oriented Design : extra 125%
 // ***********************************************************
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e25", "[problem3][OOD][sequential][runtime][e25]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e125", "[problem3][OOD][sequential][runtime][e125]")
 {
-    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e25" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e125" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF25>(design, ff, ITERATIONS);
+    OODsequentialRuntime<FlipFlopExt125>(design, ff, ITERATIONS);
 }
 // ***********************************************************
-//  Object-Oriented Design : extra 25%
+//  Object-Oriented Design : extra 125%
 // ***********************************************************
 //  -- sequential
 //      -- Miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e25", "[problem3][OOD][sequential][miss][e25]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e125", "[problem3][OOD][sequential][miss][e125]")
 {
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e25" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e125" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF25>(design, ff, ITERATIONS);
+    OODsequentialMiss<FlipFlopExt125>(design, ff, ITERATIONS);
 }
 // ***********************************************************
-//  Object-Oriented Design : extra 25%
+//  Object-Oriented Design : extra 125%
 // ***********************************************************
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e25", "[problem3][OOD][parallel][runtime][e25]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e125", "[problem3][OOD][parallel][runtime][e125]")
 {
-    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e25" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e125" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF25>(design, ff, ITERATIONS);
+    OODparallelRuntime<FlipFlopExt125>(design, ff, ITERATIONS);
 }
 // ***********************************************************
-//  Object-Oriented Design : extra 25%
+//  Object-Oriented Design : extra 125%
 // ***********************************************************
 //  -- parallel
 //      -- Miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e25", "[problem3][OOD][parallel][miss][e25]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e125", "[problem3][OOD][parallel][miss][e125]")
 {
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e25" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e125" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF25>(design, ff, ITERATIONS);
+    OODparallelMiss<FlipFlopExt125>(design, ff, ITERATIONS);
 }
+////**********************************************************************************************************************
 
-// **********************************************************************************************************************
-// **********************************************************************************************************************
 
-// ***********************************************************
-//  Object-Oriented Design : extra 50%
-// ***********************************************************
-//  -- sequential
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e50", "[problem3][OOD][sequential][runtime][e50]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e50" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF50>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 50%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e50", "[problem3][OOD][sequential][miss][e50]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e50" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF50>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 50%
-// ***********************************************************
-//  -- parallel
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e50", "[problem3][OOD][parallel][runtime][e50]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e50" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF50>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 50%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e50", "[problem3][OOD][parallel][miss][e50]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e50" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF50>(design, ff, ITERATIONS);
-}
-
-// **********************************************************************************************************************
-// **********************************************************************************************************************
-
-// ***********************************************************
-//  Object-Oriented Design : extra 75%
-// ***********************************************************
-//  -- sequential
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e75", "[problem3][OOD][sequential][runtime][e75]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e75" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF75>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 75%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e75", "[problem3][OOD][sequential][miss][e75]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e75" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF75>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 75%
-// ***********************************************************
-//  -- parallel
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e75", "[problem3][OOD][parallel][runtime][e75]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e75" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF75>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 75%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e75", "[problem3][OOD][parallel][miss][e75]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e75" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF75>(design, ff, ITERATIONS);
-}
-
-// **********************************************************************************************************************
-// **********************************************************************************************************************
-
-// ***********************************************************
-//  Object-Oriented Design : extra 100%
-// ***********************************************************
-//  -- sequential
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e100", "[problem3][OOD][sequential][runtime][e100]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e100" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF100>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 100%
-// ***********************************************************
-//  -- sequential
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e100", "[problem3][OOD][sequential][miss][e100]")
-{
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e100" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF100>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 100%
-// ***********************************************************
-//  -- parallel
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e100", "[problem3][OOD][parallel][runtime][e100]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e100" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF100>(design, ff, ITERATIONS);
-}
-// ***********************************************************
-//  Object-Oriented Design : extra 100%
-// ***********************************************************
-//  -- parallel
-//      -- Miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e100", "[problem3][OOD][parallel][miss][e100]")
-{
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e100" << std::endl;
-    auto * design = this->design_;
-    auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF100>(design, ff, ITERATIONS);
-}
-
-// **********************************************************************************************************************
-// **********************************************************************************************************************
-
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 150%
+////**********************************************************************************************************************
 // ***********************************************************
 //  Object-Oriented Design : extra 150%
 // ***********************************************************
@@ -429,7 +110,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e150" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF150>(design, ff, ITERATIONS);
+    OODsequentialRuntime<FlipFlopExt150>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 150%
@@ -439,10 +120,10 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 // ***********************************************************
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e150", "[problem3][OOD][sequential][miss][e150]")
 {
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e150" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e150" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF150>(design, ff, ITERATIONS);
+    OODsequentialMiss<FlipFlopExt150>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 150%
@@ -455,7 +136,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e150" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF150>(design, ff, ITERATIONS);
+    OODparallelRuntime<FlipFlopExt150>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 150%
@@ -465,15 +146,76 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 // ***********************************************************
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e150", "[problem3][OOD][parallel][miss][e150]")
 {
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e150" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e150" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF150>(design, ff, ITERATIONS);
+    OODparallelMiss<FlipFlopExt150>(design, ff, ITERATIONS);
 }
+////**********************************************************************************************************************
 
-// **********************************************************************************************************************
-// **********************************************************************************************************************
 
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 175%
+////**********************************************************************************************************************
+// ***********************************************************
+//  Object-Oriented Design : extra 175%
+// ***********************************************************
+//  -- sequential
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e175", "[problem3][OOD][sequential][runtime][e175]")
+{
+    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e175" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialRuntime<FlipFlopExt175>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 175%
+// ***********************************************************
+//  -- sequential
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e175", "[problem3][OOD][sequential][miss][e175]")
+{
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e175" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialMiss<FlipFlopExt175>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 175%
+// ***********************************************************
+//  -- parallel
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e175", "[problem3][OOD][parallel][runtime][e175]")
+{
+    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e175" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelRuntime<FlipFlopExt175>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 175%
+// ***********************************************************
+//  -- parallel
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e175", "[problem3][OOD][parallel][miss][e175]")
+{
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e175" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelMiss<FlipFlopExt175>(design, ff, ITERATIONS);
+}
+////**********************************************************************************************************************
+
+
+
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 200%
+////**********************************************************************************************************************
 // ***********************************************************
 //  Object-Oriented Design : extra 200%
 // ***********************************************************
@@ -485,7 +227,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e200" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialRuntime<FF200>(design, ff, ITERATIONS);
+    OODsequentialRuntime<FlipFlopExt200>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 200%
@@ -495,10 +237,10 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 // ***********************************************************
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e200", "[problem3][OOD][sequential][miss][e200]")
 {
-    std::cout << "Test Register Clustering (kmeans) sequential OOD miss e200" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e200" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODsequentialMiss<FF200>(design, ff, ITERATIONS);
+    OODsequentialMiss<FlipFlopExt200>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 200%
@@ -511,7 +253,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e200" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelRuntime<FF200>(design, ff, ITERATIONS);
+    OODparallelRuntime<FlipFlopExt200>(design, ff, ITERATIONS);
 }
 // ***********************************************************
 //  Object-Oriented Design : extra 200%
@@ -521,8 +263,125 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 // ***********************************************************
 TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e200", "[problem3][OOD][parallel][miss][e200]")
 {
-    std::cout << "Test Register Clustering (kmeans) parallel OOD miss e200" << std::endl;
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e200" << std::endl;
     auto * design = this->design_;
     auto & ff = this->flip_flop_positions;
-    OODparallelMiss<FF200>(design, ff, ITERATIONS);
+    OODparallelMiss<FlipFlopExt200>(design, ff, ITERATIONS);
 }
+////**********************************************************************************************************************
+
+
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 400%
+////**********************************************************************************************************************
+// ***********************************************************
+//  Object-Oriented Design : extra 400%
+// ***********************************************************
+//  -- sequential
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e400", "[problem3][OOD][sequential][runtime][e400]")
+{
+    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e400" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialRuntime<FlipFlopExt400>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 400%
+// ***********************************************************
+//  -- sequential
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e400", "[problem3][OOD][sequential][miss][e400]")
+{
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e400" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialMiss<FlipFlopExt400>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 400%
+// ***********************************************************
+//  -- parallel
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e400", "[problem3][OOD][parallel][runtime][e400]")
+{
+    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e400" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelRuntime<FlipFlopExt400>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 400%
+// ***********************************************************
+//  -- parallel
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e400", "[problem3][OOD][parallel][miss][e400]")
+{
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e400" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelMiss<FlipFlopExt400>(design, ff, ITERATIONS);
+}
+////**********************************************************************************************************************
+
+
+////**********************************************************************************************************************
+////                                      Object-Oriented Design : extra 600%
+////**********************************************************************************************************************
+// ***********************************************************
+//  Object-Oriented Design : extra 600%
+// ***********************************************************
+//  -- sequential
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD runtime e600", "[problem3][OOD][sequential][runtime][e600]")
+{
+    std::cout << "Test Register Clustering (kmeans) sequential OOD runtime e600" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialRuntime<FlipFlopExt600>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 600%
+// ***********************************************************
+//  -- sequential
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size sequential OOD mis e600", "[problem3][OOD][sequential][miss][e600]")
+{
+    std::cout << "Test Register Clustering (kmeans) size sequential OOD mis e600" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODsequentialMiss<FlipFlopExt600>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 600%
+// ***********************************************************
+//  -- parallel
+//      -- runtime
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD runtime e600", "[problem3][OOD][parallel][runtime][e600]")
+{
+    std::cout << "Test Register Clustering (kmeans) parallel OOD runtime e600" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelRuntime<FlipFlopExt600>(design, ff, ITERATIONS);
+}
+// ***********************************************************
+//  Object-Oriented Design : extra 600%
+// ***********************************************************
+//  -- parallel
+//      -- Miss
+// ***********************************************************
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) size parallel OOD miss e600", "[problem3][OOD][parallel][miss][e600]")
+{
+    std::cout << "Test Register Clustering (kmeans) size parallel OOD miss e600" << std::endl;
+    auto * design = this->design_;
+    auto & ff = this->flip_flop_positions;
+    OODparallelMiss<FlipFlopExt600>(design, ff, ITERATIONS);
+}
+////**********************************************************************************************************************

@@ -13,99 +13,13 @@ namespace experiments
 namespace register_clustering
 {
 
-class ClusterOOD;
-
+template <class FF> class ClusterOOD;
 
 class FlipFlop
 {
-public:
-    virtual geometry::Point position() const = 0;
-    virtual void setPosition(const geometry::Point &position) = 0;
-    virtual ClusterOOD *clusterBest() const = 0;
-    virtual void setClusterBest(ClusterOOD *clusterBest) = 0;
-};
-
-class FlipFlopExt
-{
-private:
 private:
     geometry::Point position_;
-    ClusterOOD * clusterBest_;
-
-    std::string name_ = "DFF_X80";
-    volatile long long cap;
-    volatile long long cap2;
-    geometry::Point size_;
-    int net_;
-
-    volatile long double a;
-    volatile long double b;
-    volatile long double c;
-    volatile long double d;
-    volatile long double e;
-    volatile long double f;
-    volatile long double g;
-    volatile long double h;
-    volatile long double i;
-    volatile long double j;
-    volatile long double k;
-    volatile long double l;
-    volatile long double m;
-    volatile long double n;
-    volatile long double o;
-    volatile long double p;
-    volatile long double q;
-    volatile long double r;
-    volatile long double s;
-    volatile long double t;
-    volatile long double u;
-    volatile long double v;
-    volatile long double x;
-    volatile long double z;
-    volatile long double aa;
-    volatile long double bb;
-    volatile long double cc;
-    volatile long double dd;
-    volatile long double ee;
-    volatile long double ff;
-    volatile long double gg;
-    volatile long double hh;
-    volatile long double ii;
-    volatile long double jj;
-    volatile double aaa;
-public:
-    FlipFlopExt(geometry::Point & p) : position_(p) {
-        cap = 5;
-        cap2 = cap * 2;
-        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, x, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, aaa = 0.5;
-    }
-
-    virtual ClusterOOD *clusterBest() const
-    {
-        return clusterBest_;
-    }
-
-    virtual void setClusterBest(ClusterOOD *clusterBest)
-    {
-        clusterBest_ = clusterBest;
-    }
-
-    virtual geometry::Point position() const
-    {
-        return position_;
-    }
-
-    virtual void setPosition(const geometry::Point &position)
-    {
-        position_ = position;
-    }
-};
-
-class FlipFlopF : public FlipFlop
-{
-private:
-    geometry::Point position_;
-    ClusterOOD * clusterBest_;
+    ClusterOOD<FlipFlop> * clusterBest_;
 
     std::string name_ = "DFF_X80";
     volatile long long cap;
@@ -113,17 +27,17 @@ private:
     geometry::Point size_;
     int net_;
 public:
-    FlipFlopF(geometry::Point & p) : position_(p) {
+    FlipFlop(geometry::Point & p) : position_(p) {
         cap = 5;
         cap2 = cap * 2;
     }
 
-    virtual ClusterOOD *clusterBest() const
+    virtual ClusterOOD<FlipFlop> *clusterBest() const
     {
         return clusterBest_;
     }
 
-    virtual void setClusterBest(ClusterOOD *clusterBest)
+    virtual void setClusterBest(ClusterOOD<FlipFlop> *clusterBest)
     {
         clusterBest_ = clusterBest;
     }
@@ -139,129 +53,45 @@ public:
     }
 };
 
-class FlipFlopF600 : public FlipFlop
-{
-private:
-    geometry::Point position_;
-    ClusterOOD * clusterBest_;
-
-    std::string name_ = "DFF_X80";
-    volatile long double cap;
-    volatile long double cap2;
-
-
-    geometry::Point size_;
-    int net_;
-public:
-    FlipFlopF600(geometry::Point & p) : position_(p) {
-        cap = 5;
-        cap2 = cap * 2;
-
-//        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, x, z, aa, bb, cc, dd, ee, ff, gg, hh, ii, jj, aaa = 0.5;
-    }
-
-    virtual ClusterOOD *clusterBest() const
-    {
-        return clusterBest_;
-    }
-
-    virtual void setClusterBest(ClusterOOD *clusterBest)
-    {
-        clusterBest_ = clusterBest;
-    }
-
-    virtual geometry::Point position() const
-    {
-        return position_;
-    }
-
-    virtual void setPosition(const geometry::Point &position)
-    {
-        position_ = position;
-    }
-};
-
-template<int N>
-class FlipFlopT : public FlipFlop
-{
-private:
-    geometry::Point position_;
-    ClusterOOD * clusterBest_;
-
-    std::string name_ = "DFF_X80";
-    volatile long long cap;
-    volatile long long cap2;
-    geometry::Point size_;
-    int net_;
-
-public:
-    volatile std::array<double, N> mem;
-
-    FlipFlopT(geometry::Point & p) : position_(p) {
-        cap = 5;
-        cap2 = cap * 2;
-//        mem.fill(5.0);
-    }
-
-    virtual ClusterOOD * clusterBest() const
-    {
-        return clusterBest_;
-    }
-
-    virtual void setClusterBest(ClusterOOD *clusterBest)
-    {
-        clusterBest_ = clusterBest;
-    }
-
-    virtual geometry::Point position() const
-    {
-        return position_;
-    }
-
-    virtual void setPosition(const geometry::Point &position)
-    {
-        position_ = position;
-    }
-
-};
-
+template <class FF>
 class ClusterOOD
 {
 private:
     geometry::Point center_;
-    std::vector<FlipFlop*> elements_;
 public:
-    ClusterOOD(const geometry::Point &center);
+    std::vector< FF *> elements_;
 
-    std::vector<FlipFlop*> elements() const;
-    void elements(const std::vector<FlipFlop*> &elements);
-    geometry::Point center() const;
-    void center(const geometry::Point &center);
+    ClusterOOD(const geometry::Point &center) : center_(center){
+    }
 
-    void insertElement(FlipFlop *element);
-    void clear();
-    int size();
+    std::vector< FF *> elements() const {
+        return elements_;
+    }
+    void elements(const std::vector<FF*> &elements){
+        elements_ = elements;
+    }
+
+    geometry::Point center() const {
+        return center_;
+    }
+    void center(const geometry::Point &center){
+        center_ = center;
+    }
+
+    void insertElement(FF *element){
+        elements_.push_back(element);
+    }
+
+    void clear(){
+        elements_.clear();
+    }
+
+    int size(){
+        return elements_.size();
+    }
 };
 
-class ClusterOODext
-{
-private:
-    geometry::Point center_;
-    std::vector<FlipFlopExt*> elements_;
-public:
-    ClusterOODext(const geometry::Point &center);
-
-    std::vector<FlipFlopExt*> elements() const;
-    void elements(const std::vector<FlipFlopExt*> &elements);
-    geometry::Point center() const;
-    void center(const geometry::Point &center);
-
-    void insertElement(FlipFlopExt *element);
-    void clear();
-    int size();
-};
-
-
+template <class FF>
 class KmeansObjectOrientedDesign
 {
 private:
@@ -270,28 +100,138 @@ private:
     std::uniform_real_distribution<double> m_distribution_y;
 
 
-    using rtree_node = std::pair<geometry::Point, ClusterOOD*>;
-    using rtree_nodeExt = std::pair<geometry::Point, ClusterOODext*>;
+public:
+    using rtree_node = std::pair<geometry::Point, ClusterOOD<FF>*>;
 
     using rtree = boost::geometry::index::rtree<rtree_node, boost::geometry::index::rstar<16> >;
-    using rtreeExt = boost::geometry::index::rtree<rtree_nodeExt, boost::geometry::index::rstar<16> >;
-public:
-    std::vector<ClusterOOD> clusters_;
-    std::vector<ClusterOODext> clustersExt_;
+    std::vector<ClusterOOD<FF> > clusters_;
 
-    KmeansObjectOrientedDesign(geometry::Point chipOrigin, geometry::Point chipBondary, unsigned k = 50);
-    KmeansObjectOrientedDesign(const std::vector<geometry::Point> &centers);
 
-    void cluster_registers_with_rtree(std::vector<FlipFlopExt > &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
+    KmeansObjectOrientedDesign(geometry::Point chipOrigin, geometry::Point chipBondary, unsigned k = 50) :
+        m_distribution_x(chipOrigin.x(),chipBondary.x()), m_distribution_y(chipOrigin.y(),chipBondary.y())
+    {
+        clusters_.reserve(k);
+        for (int i = 0; i < k; ++i)
+        {
+            clusters_.push_back(ClusterOOD<FF>(geometry::Point(m_distribution_x(m_generator), m_distribution_y(m_generator))));
+        }
+    }
+    KmeansObjectOrientedDesign(const std::vector<geometry::Point> &centers)
+    {
+        clusters_.reserve(centers.size());
+        for(auto p : centers)
+        {
+            clusters_.push_back(ClusterOOD<FF>(p));
+        }
+    }
 
-    void cluster_registers_with_rtree(std::vector<std::unique_ptr<FlipFlop> > &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
-    void cluster_registers_with_rtree_paralel(std::vector<std::unique_ptr<FlipFlop> > &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10);
-//    void cluster_registers(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
-//    void cluster_registers_paralel(std::vector<FlipFlop> &flip_flops, unsigned iterations = 10);
+    void cluster_registers_with_rtree(std::vector< FF > &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10)
+    {
+            #if 0
+        std::cout<<"---- INFO: teste miss----"
+                 <<"\nNumber flipflops: "<< flip_flops.size()
+                 << "\nsize flipflops : " << sizeof(FlipFlop)
+                 <<"\nNumber Cluster: "<< clusters_.size()
+                 << "\nsize Cluster : " << sizeof(ClusterOOD)
+            //             << "\n expected cache misses: " << design.netlist().size(ophidian::circuit::Cell()) * sizeof(ophidian::experiments::chip_boundaries::PlacementCell) / 64
+                 << "\n------" <<std::endl;
+            #endif
+
+        metric.start();
+        for (int i = 0; i < iterations; ++i)
+        {
+            rtree clusters_rtree;
+            for (ClusterOOD<FF> &cluster : clusters_)
+            {
+                clusters_rtree.insert(rtree_node(cluster.center(), &cluster));
+                cluster.clear();
+            }
+            std::vector<rtree_node> closest_nodes;
+            for(auto flip_flop_it = flip_flops.begin(); flip_flop_it != flip_flops.end(); ++flip_flop_it)
+            {
+                FF & flip_flop = *flip_flop_it;
+                closest_nodes.clear();
+                clusters_rtree.query(boost::geometry::index::nearest(flip_flop.position(), 1), std::back_inserter(closest_nodes));
+                ClusterOOD<FF> *closest_cluster = closest_nodes.front().second;
+                closest_cluster->insertElement(&flip_flop);
+            }
+            for(auto cluster_it = clusters_.begin(); cluster_it != clusters_.end(); ++cluster_it)
+            {
+                auto cluster = *cluster_it;
+                if(cluster.elements().size() != 0)
+                {
+                    double x_c = 0, y_c = 0;
+                    for(FF * p : cluster.elements())
+                    {
+                        x_c += p->position().x();
+                        y_c += p->position().y();
+                    }
+                    x_c = x_c / (double)cluster.elements().size();
+                    y_c = y_c / (double)cluster.elements().size();
+                    cluster.center(geometry::Point(x_c, y_c));
+                }
+            }
+        }
+        metric.end();
+    }
+
+    void cluster_registers_with_rtree_paralel(std::vector<FF>  &flip_flops, ophidian::experiments::Metric &metric, unsigned iterations = 10)
+    {
+        metric.start();
+        for (int i = 0; i < iterations; ++i)
+        {
+            rtree clusters_rtree;
+            for (ClusterOOD<FF> &cluster : clusters_)
+            {
+                clusters_rtree.insert(rtree_node(cluster.center(), &cluster));
+                cluster.clear();
+            }
+
+            std::vector<ClusterOOD<FF>*> flip_flop_to_cluster;
+            flip_flop_to_cluster.resize(flip_flops.size());
+            #pragma omp parallel for
+            for (unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
+            {
+                FF &flip_flop = flip_flops.at(flip_flop_index);
+                std::vector<rtree_node> closest_nodes;
+                clusters_rtree.query(boost::geometry::index::nearest(flip_flop.position(), 1), std::back_inserter(closest_nodes));
+                ClusterOOD<FF> *closest_cluster = closest_nodes.front().second;
+                flip_flop_to_cluster.at(flip_flop_index) = closest_cluster;
+                //            closest_cluster->insertElement(flip_flop);
+            }
+
+            for(unsigned flip_flop_index = 0; flip_flop_index < flip_flops.size(); ++flip_flop_index)
+            {
+                auto & flip_flop = flip_flops.at(flip_flop_index);
+                ClusterOOD<FF> *cluster = flip_flop_to_cluster.at(flip_flop_index);
+                cluster->insertElement(&flip_flop);
+            }
+
+            #pragma omp parallel for
+            for (auto cluster = clusters_.begin(); cluster < clusters_.end(); ++cluster)
+            {
+                if(cluster->elements().size() != 0)
+                {
+                    double x_c = 0, y_c = 0;
+                    for(FF * p : cluster->elements())
+                    {
+                        x_c += p->position().x();
+                        y_c += p->position().y();
+                    }
+                    x_c = x_c / (double)cluster->elements().size();
+                    y_c = y_c / (double)cluster->elements().size();
+                    cluster->center(geometry::Point(x_c, y_c));
+                }
+            }
+        }
+        metric.end();
+    }
+
 };
-
 
 } // namespace register_clustering
 } // namespace experiments
 } // namespace ophidian
+
+
 #endif // KMEANSOBJECTORIENTEDDESIGN_H

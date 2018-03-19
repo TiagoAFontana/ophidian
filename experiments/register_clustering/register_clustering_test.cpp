@@ -21,7 +21,7 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::register_clustering;
 
-#define ITERATIONS 5
+#define ITERATIONS 30
 
 
 // ***********************************************************
@@ -30,23 +30,23 @@ using namespace ophidian::experiments::register_clustering;
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD runtime", "[problem3][OOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD runtime", "[problem3][OOD][sequential][runtime][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+    using ff = ophidian::experiments::register_clustering::FlipFlop;
+    register_clustering::KmeansObjectOrientedDesign<ff> kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopF;
-    std::vector< unique_ptr > flip_flops;
+//    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
+    std::vector< ff > flip_flops;
 
     flip_flops.reserve(flip_flop_positions.size());
 
     for(auto p : flip_flop_positions)
     {
 
-        flip_flops.push_back( unique_ptr(new ff(p)) );
+        flip_flops.push_back( ff(p) );
     }
 
     kmeansOOD.cluster_registers_with_rtree(flip_flops, *runtime, 10);
@@ -65,7 +65,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- sequential
 //      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential OOD cache misses", "[problem3][OOD][sequential][miss][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential OOD cache misses" << std::endl;
     int PAPI_events[] = {
@@ -81,16 +81,15 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+    using ff = ophidian::experiments::register_clustering::FlipFlop;
+    register_clustering::KmeansObjectOrientedDesign<ff> kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopF;
-    std::vector< unique_ptr > flip_flops;
+    std::vector< ff > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
 
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(unique_ptr(new ff(p)));
+        flip_flops.push_back(ff(p));
     }
 
     kmeansOOD.cluster_registers_with_rtree(flip_flops, *miss, 10);
@@ -111,20 +110,19 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD runtime", "[problem3][OOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD runtime", "[problem3][OOD][parallel][runtime][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+    using ff = ophidian::experiments::register_clustering::FlipFlop;
+    register_clustering::KmeansObjectOrientedDesign<ff> kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopF;
-    std::vector< unique_ptr > flip_flops;
+    std::vector< ff > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(unique_ptr(new ff(p)));
+        flip_flops.push_back(ff(p));
     }
 
     kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *runtime, 10);
@@ -143,7 +141,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- parallel
 //      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel OOD cache misses", "[problem3][OOD][parallel][miss][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel OOD cache misses" << std::endl;
     int PAPI_events[] = {
@@ -159,15 +157,14 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    register_clustering::KmeansObjectOrientedDesign kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
+    using ff = ophidian::experiments::register_clustering::FlipFlop;
+    register_clustering::KmeansObjectOrientedDesign<ff> kmeansOOD (design_->floorplan().chipOrigin().toPoint(), design_->floorplan().chipUpperRightCorner().toPoint(), (int)(flip_flop_positions.size()/50) );
 
-    using unique_ptr = std::unique_ptr<ophidian::experiments::register_clustering::FlipFlop>;
-    using ff = ophidian::experiments::register_clustering::FlipFlopF;
-    std::vector< unique_ptr > flip_flops;
+    std::vector< ff > flip_flops;
     flip_flops.reserve(flip_flop_positions.size());
     for(auto p : flip_flop_positions)
     {
-        flip_flops.push_back(unique_ptr(new ff(p)));
+        flip_flops.push_back(ff(p));
     }
 
     kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
@@ -193,7 +190,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- sequential
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD runtime", "[problem3][DOD][sequential][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD runtime", "[problem3][DOD][sequential][runtime][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
@@ -216,7 +213,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- sequential
 //      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) sequential DOD cache misses", "[problem3][DOD][sequential][miss][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) sequential DOD cache misses" << std::endl;
     int PAPI_events[] = {
@@ -252,7 +249,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- parallel
 //      -- runtime
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD runtime", "[problem3][DOD][parallel][runtime]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD runtime", "[problem3][DOD][parallel][runtime][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel DOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
@@ -275,7 +272,7 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
 //  -- parallel
 //      -- miss
 // ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss]")
+TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (kmeans) parallel DOD cache misses", "[problem3][DOD][parallel][miss][e0]")
 {
     std::cout << "Test Register Clustering (kmeans) parallel DOD cache misses" << std::endl;
     int PAPI_events[] = {

@@ -11,17 +11,8 @@
 
 # Fetch test files recursevely
 file(GLOB_RECURSE ophidian_run_experiments_SRC  
-#    "*.cpp"
-#    "*.h"
-    "experiment.*"
-    "metric.h"
-    "main.cpp"
-#    "./chip_boundaries/*.cpp"
-#    "./chip_boundaries/*.h"
-#    "./interconections/*.h"
-#    "./interconections/*.cpp"
-    "./register_clustering/*.h"
-    "./register_clustering/*.cpp"
+    "*.cpp"
+    "*.h"
 )
 
 find_package(PAPI)
@@ -74,6 +65,28 @@ execute_process(
     COMMAND ln -f -s ${PROJECT_SOURCE_DIR}/experiments/run.sh ${PROJECT_BINARY_DIR}/experiments/.
     RESULT_VARIABLE result
 )
+
+find_file(POWV9 "POWV9.dat" PATHS
+    "/usr/share/Flute"
+    "/usr/local/share/Flute"
+    "${ophidian_source_dir}/dependencies/share/Flute"
+)
+find_file(PORT9 "PORT9.dat" PATHS
+    "/usr/share/Flute"
+    "/usr/local/share/Flute"
+    "${ophidian_source_dir}/dependencies/share/Flute"
+)
+
+message("Creating symlink FLUTE LUTs")
+execute_process(
+    COMMAND ln -f -s ${POWV9} ${PROJECT_BINARY_DIR}/experiments/.
+    RESULT_VARIABLE result
+)
+execute_process(
+    COMMAND ln -f -s ${PORT9} ${PROJECT_BINARY_DIR}/experiments/.
+    RESULT_VARIABLE result
+)
+
 #execute_process(
 #    COMMAND tar -zxvf superblue18.tar.gz
 #    WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/test/input_files

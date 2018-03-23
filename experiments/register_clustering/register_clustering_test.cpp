@@ -170,13 +170,9 @@ TEST_CASE_METHOD(ExperimentFixtureKmeansICCAD2015, "Test Register Clustering (km
     kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
     for (int i = 0; i < ITERATIONS; ++i)
     {
-
-
         kmeansOOD.cluster_registers_with_rtree_paralel(flip_flops, *miss, 10);
-
         miss->print_result();
         miss->print_file_result(Experiment::getInstance().getOutput_file());
-
     }
 
 }

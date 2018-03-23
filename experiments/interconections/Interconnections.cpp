@@ -437,7 +437,7 @@ void interconnection_estimate_parallel_dod_property_ordered(ophidian::design::De
     metric.start();
 
 #pragma omp parallel for
-    for(auto net_it = nets.begin(); net_it != nets.end(); ++net_it)
+    for(auto net_it = nets.begin(); net_it < nets.end(); ++net_it)
     {
         interconnection::hpwl(propGrouped.begin(*net_it), propGrouped.end(*net_it));
     }

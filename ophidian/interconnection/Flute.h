@@ -22,93 +22,146 @@
 #include <ophidian/geometry/Models.h>
 #include <vector>
 #include <memory>
+#include <iterator>
 
 namespace ophidian
 {
-    namespace interconnection
-    {
-        class SteinerTree;
+namespace interconnection
+{
+class SteinerTree;
 
 //! FLUTE: Fast Lookup Table Based Technique for RSMT Construction and Wirelength Estimation
 
 /*!
    From: http://home.eng.iastate.edu/~cnchu/flute.html
  */
-        class Flute final
+class Flute final
+{
+public:
+
+    //! Singleton instantiation
+    static Flute & instance();
+
+    ~Flute();
+
+    //! Create Steiner Tree
+
+    /*!
+        \brief Creates a Steiner Tree from a container of geometry::Point using FLUTE algorithm.
+        \param container A container of geometry::Point.
+        \return A std::unique_ptr to the created Steiner Tree.
+     */
+    template <class T>
+    inline std::unique_ptr <SteinerTree> create(const T & container)
+    {
+        const uint32_t kSize = container.size();
+
+        if(kSize == 1)
         {
-        public:
+            return trivialSteinerTree(*std::begin(container));
+        }
+        else if(kSize == 2)
+        {
+            typename T::const_iterator it(container.begin());
+            typename T::const_iterator it2(it);
+            ++it2;
 
-            //! Singleton instantiation
-            static Flute & instance();
+            return singleSegment(*it, *it2);
+        }
+        std::vector <unsigned> X(kSize);
+        std::vector <unsigned> Y(kSize);
+        X.resize(0);
+        Y.resize(0);
 
-            ~Flute();
+        geometry::Point offset(0.0, 0.0);
 
-            //! Create Steiner Tree
+        for(const auto & point : container)
+        {
+            offset.x(std::min(offset.x(), point.x()));
+            offset.y(std::min(offset.y(), point.y()));
+        }
 
-            /*!
-                \brief Creates a Steiner Tree from a container of geometry::Point using FLUTE algorithm.
-                \param container A container of geometry::Point.
-                \return A std::unique_ptr to the created Steiner Tree.
-             */
-            template <class T>
-            inline std::unique_ptr <SteinerTree> create(const T & container)
-            {
-                const uint32_t kSize = container.size();
+        offset.x(-offset.x());
+        offset.y(-offset.y());
 
-                if(kSize == 1) {
-                    return trivialSteinerTree(*std::begin(container));
-                }
-                else if(kSize == 2) {
-                    typename T::const_iterator it(container.begin());
-                    typename T::const_iterator it2(it);
-                    ++it2;
+        for(const auto & point : container)
+        {
+            X.push_back(static_cast <unsigned>(std::round(point.x() + offset.x())));
+            Y.push_back(static_cast <unsigned>(std::round(point.y() + offset.y())));
+        }
 
-                    return singleSegment(*it, *it2);
-                }
-                std::vector <unsigned> X(kSize);
-                std::vector <unsigned> Y(kSize);
-                X.resize(0);
-                Y.resize(0);
+        return callFlute(X, Y, offset);
+    }
 
-                geometry::Point offset(0.0, 0.0);
+    template <class T>
+    inline std::unique_ptr <SteinerTree> create(typename std::vector<T>::iterator begin, typename std::vector<T>::iterator end)
+    {
+//                const uint32_t kSize = container.size();
+        const uint32_t kSize = std::distance(begin, end);
 
-                for(const auto & point : container)
-                {
-                    offset.x(std::min(offset.x(), point.x()));
-                    offset.y(std::min(offset.y(), point.y()));
-                }
+        if(kSize == 1)
+        {
+            return trivialSteinerTree(*begin);
+        }
+        else if(kSize == 2)
+        {
+//            typename T::const_iterator it(begin);
+//            typename T::const_iterator it2(it);
+//            ++it2;
 
-                offset.x(-offset.x());
-                offset.y(-offset.y());
+//            return singleSegment(*it, *it2);
+            auto p = *begin;
+            ++begin;
+            return singleSegment(p, *begin);
+        }
+        std::vector <unsigned> X(kSize);
+        std::vector <unsigned> Y(kSize);
+        X.resize(0);
+        Y.resize(0);
 
-                for(const auto & point : container)
-                {
-                    X.push_back(static_cast <unsigned>(std::round(point.x() + offset.x())));
-                    Y.push_back(static_cast <unsigned>(std::round(point.y() + offset.y())));
-                }
+        geometry::Point offset(0.0, 0.0);
 
-                return callFlute(X, Y, offset);
-            }
+//                for(const auto & point : container)
+        for(auto p_it = begin; p_it != end; ++p_it)
+        {
+            const auto & point = *p_it;
+            offset.x(std::min(offset.x(), point.x()));
+            offset.y(std::min(offset.y(), point.y()));
+        }
 
-        private:
-            std::unique_ptr <SteinerTree> singleSegment(
-                const geometry::Point & p1,
-                const geometry::Point & p2);
+        offset.x(-offset.x());
+        offset.y(-offset.y());
 
-            std::unique_ptr <SteinerTree> trivialSteinerTree(const geometry::Point & p);
+//                for(const auto & point : container)
+        for(auto p_it = begin; p_it != end; ++p_it)
+        {
+            const auto & point = *p_it;
+            X.push_back(static_cast <unsigned>(std::round(point.x() + offset.x())));
+            Y.push_back(static_cast <unsigned>(std::round(point.y() + offset.y())));
+        }
 
-            std::unique_ptr <SteinerTree> callFlute(
-                const std::vector <unsigned> & X,
-                const std::vector <unsigned> & Y,
-                const geometry::Point & offset);
+        return callFlute(X, Y, offset);
+    }
 
-            Flute();
+private:
+    std::unique_ptr <SteinerTree> singleSegment(
+        const geometry::Point & p1,
+        const geometry::Point & p2);
 
-            Flute(const Flute & o) = delete;
+    std::unique_ptr <SteinerTree> trivialSteinerTree(const geometry::Point & p);
 
-            Flute & operator=(const Flute & o) = delete;
-        };
-    }     // namespace interconnection
+    std::unique_ptr <SteinerTree> callFlute(
+        const std::vector <unsigned> & X,
+        const std::vector <unsigned> & Y,
+        const geometry::Point & offset);
+
+    Flute();
+
+    Flute(const Flute & o) = delete;
+
+    Flute & operator=(const Flute & o) = delete;
+};
+}         // namespace interconnection
 }     // namespace ophidian
 
 #endif // OPHIDIAN_INTERCONNECTION_FLUTE_H

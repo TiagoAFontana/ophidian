@@ -5,14 +5,13 @@
 #include <ophidian/entity_system/PropertyGrouped.h>
 #include <lemon/grid_graph.h>
 #include <iterator>
+#include <iostream>
 namespace ophidian
 {
 namespace experiments
 {
 namespace a_star
 {
-
-#define NET_PERCENTAGE 0.1
 
 //=================================================================================================
 //============================================== DOD ==============================================
@@ -54,6 +53,8 @@ void A_star_data_oriented_design_sequential(design::Design &design, Metric &metr
 
     ophidian::entity_system::PropertyGrouped<Net, Pin, Point> propGrouped(nets, pinPosition, netPins);
 
+    metric.start();
+
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
     ophidian::util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
@@ -68,22 +69,21 @@ void A_star_data_oriented_design_sequential(design::Design &design, Metric &metr
 //    lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node> path;
 
 
     int count = nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = nets.begin();
     auto end = nets.begin();
     std::advance(end, count);
 
-    metric.start();
 
     //construindo a steiner de cada net
 
 //    for(auto net_it = nets.begin(); net_it < nets.end(); ++net_it)
     for(auto net_it = begin; net_it != end; ++net_it)
     {
+        std::vector<Node> path;
         std::unique_ptr<SteinerTree> tree = flute.create<Point>(propGrouped.begin(*net_it), propGrouped.end(*net_it));
 
         //executando A* para cada segmento da net
@@ -97,7 +97,7 @@ void A_star_data_oriented_design_sequential(design::Design &design, Metric &metr
 
             path.clear();
             astar.search(point_u, point_v, path);
-//            astar.updateGraph(path);
+//            astar.updateGraph(path);]
         }
     }
     metric.end();
@@ -140,6 +140,7 @@ void A_star_data_oriented_design_parallel(design::Design &design, Metric &metric
 
     ophidian::entity_system::PropertyGrouped<Net, Pin, Point> propGrouped(nets, pinPosition, netPins);
 
+    metric.start();
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
     ophidian::util::LocationDbu m_chip_UpperRightCorner = design.floorplan().chipUpperRightCorner();
@@ -154,22 +155,21 @@ void A_star_data_oriented_design_parallel(design::Design &design, Metric &metric
     lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node> path;
 
 
     int count = nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = nets.begin();
     auto end = nets.begin();
     std::advance(end, count);
 
-    metric.start();
 
     //construindo a steiner de cada net
 #pragma omp parallel for
 //    for(auto net_it = nets.begin(); net_it < nets.end(); ++net_it)
     for(auto net_it = begin; net_it < end; ++net_it)
     {
+        std::vector<Node> path;
         std::unique_ptr<SteinerTree> tree = flute.create<Point>(propGrouped.begin(*net_it), propGrouped.end(*net_it));
 
         //executando A* para cada segmento da net

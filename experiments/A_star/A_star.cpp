@@ -1,12 +1,11 @@
 #include "A_star.h"
-#include <queue>
+
 namespace ophidian
 {
 namespace experiments
 {
 namespace a_star
 {
-
 struct LessThan
 {
     bool operator()(const std::pair<lemon::GridGraph::Node, int>& a, const std::pair<lemon::GridGraph::Node, int>& b) const
@@ -27,21 +26,29 @@ int heuristic_cost_estimate(std::pair<int, int> start, std::pair<int, int> goal)
 
 A_star::A_star(int cols, int rows, int capacity)
     : graph(cols, rows),
-    edgeCapacity(graph, capacity)
+    cameFrom(graph),
+    edgeCapacity(graph, capacity),
+    closedSet(graph, false),
+    gScore(graph, std::numeric_limits<int>::max()),
+    fScore(graph, std::numeric_limits<int>::max())
 {
-
 }
 
 
 int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vector<lemon::GridGraph::Node> &path)
 {
     using Node = lemon::GridGraph::Node;
+    std::vector<Node> clearNode;
+
 
     Node sourceNode = graph(start.first, start.second);
     Node sinkNode = graph(goal.first, goal.second);
 
+    clearNode.push_back(sourceNode);
+    clearNode.push_back(sinkNode);
+
     // The set of nodes already evaluated
-    lemon::GridGraph::NodeMap<bool> closedSet(graph, false);
+//    lemon::GridGraph::NodeMap<bool> closedSet(graph, false);
 
     // The set of currently discovered nodes that are not evaluated yet.
     // Initially, only the start node is known.
@@ -53,11 +60,11 @@ int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vec
     // If a node can be reached from many nodes, cameFrom will eventually contain the
     // most efficient previous step.
     // cameFrom := an empty map
-    lemon::GridGraph::NodeMap<Node> cameFrom(graph);
+//    lemon::GridGraph::NodeMap<Node> cameFrom(graph);
 
     // For each node, the cost of getting from the start node to that node.
     // gScore := map with default value of Infinity
-    lemon::GridGraph::NodeMap<int> gScore(graph, std::numeric_limits<int>::max());
+//    lemon::GridGraph::NodeMap<int> gScore(graph, std::numeric_limits<int>::max());
 
     // The cost of going from start to start is zero.
     // gScore[start] := 0
@@ -66,7 +73,7 @@ int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vec
     // For each node, the total cost of getting from the start node to the goal
     // by passing by that node. That value is partly known, partly heuristic.
     // fScore := map with default value of Infinity
-    lemon::GridGraph::NodeMap<int> fScore(graph, std::numeric_limits<int>::max());
+//    lemon::GridGraph::NodeMap<int> fScore(graph, std::numeric_limits<int>::max());
 
     // For the first node, that value is completely heuristic.
     // fScore[start] := heuristic_cost_estimate(start, goal)
@@ -75,6 +82,7 @@ int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vec
     while (!openSet.empty())  //openSet is not empty
     {   // current := the node in openSet having the lowest fScore[] value
         Node current = openSet.top().first;
+        clearNode.push_back(current);
         // if current = goal
         //    return reconstruct_path(cameFrom, current)
         if (current == sinkNode)
@@ -85,6 +93,14 @@ int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vec
                 current = cameFrom[current];
                 path.push_back(current);
             }
+
+            for(Node n : clearNode)
+            {
+                closedSet[n] = false;
+                gScore[n] = std::numeric_limits<int>::max();
+                fScore[n] = std::numeric_limits<int>::max();
+            }
+
             return 0;
         }
 
@@ -103,6 +119,7 @@ int A_star::search(std::pair<int, int> start, std::pair<int, int> goal, std::vec
                 continue; // Edge full
 
             auto neighbor = graph.target(arc);
+            clearNode.push_back(neighbor);
             if(closedSet[neighbor])
                 continue; // Ignore the neighbor which is already evaluated.
 
@@ -164,6 +181,9 @@ int A_star_OOD::search(std::pair<int, int> start, std::pair<int, int> goal, std:
 {
     using Node = ophidian::experiments::a_star::Node;
 
+    std::vector<Node *> clearNodes;
+//    graph.clearNodes();
+
     Node * sourceNode = graph(start.first, start.second);
     Node * sinkNode = graph(goal.first, goal.second);
 
@@ -201,6 +221,14 @@ int A_star_OOD::search(std::pair<int, int> start, std::pair<int, int> goal, std:
 //    fScore[sourceNode] = heuristic_cost_estimate(start, goal);
     sourceNode->FScore(heuristic_cost_estimate(start, goal));
 
+    if(*sourceNode == *graph(1,61) && *sinkNode == *graph(45,61))
+    {
+        int cc;
+        cc =2;
+    }
+
+    clearNodes.push_back(sourceNode);
+    clearNodes.push_back(sinkNode);
     while (!openSet.empty())  //openSet is not empty
     {   // current := the node in openSet having the lowest fScore[] value
         Node * current = openSet.top().first;
@@ -212,7 +240,16 @@ int A_star_OOD::search(std::pair<int, int> start, std::pair<int, int> goal, std:
             while(*current != *sourceNode)
             {
                 current = current->cameFrom();
-                path.push_back(current);
+                path.push_back(current);;
+            }
+
+            for(Node * n : clearNodes)
+            {
+                n->closedSet(false);
+                n->GScore(std::numeric_limits<int>::max());
+                n->FScore(std::numeric_limits<int>::max());
+                n->clearNeighbors();
+                n->clearNeighbors();
             }
             return 0;
         }
@@ -226,12 +263,15 @@ int A_star_OOD::search(std::pair<int, int> start, std::pair<int, int> goal, std:
         }
         current->closedSet(true);
 
+        clearNodes.push_back(current);
+
         for(Edge arc : current->edges())
         {
             if(arc.capacity() <= 0)
                 continue; // Edge full
 
             auto * neighbor = arc.target();
+            clearNodes.push_back(neighbor);
             if(neighbor->closedSet())
                 continue; // Ignore the neighbor which is already evaluated.
 
@@ -246,6 +286,7 @@ int A_star_OOD::search(std::pair<int, int> start, std::pair<int, int> goal, std:
             neighbor->GScore(tentative_gScore);
             neighbor->FScore(neighbor->GScore() + heuristic_cost_estimate(std::make_pair(neighbor->x(), neighbor->y()), goal));
             openSet.push(std::make_pair( neighbor, neighbor->FScore()));
+            clearNodes.push_back(neighbor);
         }
     }
     return -1;

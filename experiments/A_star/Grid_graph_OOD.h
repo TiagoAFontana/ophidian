@@ -13,7 +13,7 @@ class Edge;
 class Node
 {
 public:
-    Node(): m_closedSet(false), m_gScore(std::numeric_limits<int>::max()), m_fScore(std::numeric_limits<int>::max()){
+    Node() : m_closedSet(false), m_gScore(std::numeric_limits<int>::max()), m_fScore(std::numeric_limits<int>::max()){
         m_edges.reserve(4);
     }
 
@@ -45,7 +45,7 @@ public:
     int FScore() const;
     void FScore(int value);
 
-
+    void clearNeighbors();
 private:
     std::vector<Edge> m_edges;
     int m_x;
@@ -85,6 +85,8 @@ public:
     Node * operator()(int i, int j){
         return &m_nodes[i][j];
     }
+
+    void clearNodes();
 
     void print();
 private:

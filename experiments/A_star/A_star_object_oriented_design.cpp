@@ -58,7 +58,7 @@ const geometry::Point &PinPlacement::pin_position(){
 
 
 
-#define NET_PERCENTAGE 0.1
+
 
 //=================================================================================================
 //========================================= OOD GRAPH OOD =========================================
@@ -106,6 +106,7 @@ void A_star_object_oriented_design_sequential_graphOOD(design::Design &design, M
         }
     }
 
+    metric.start();
 
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
@@ -121,20 +122,18 @@ void A_star_object_oriented_design_sequential_graphOOD(design::Design &design, M
 //    lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node*> path;
 
 
     int count = m_nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = m_nets.begin();
     auto end = m_nets.begin();
     std::advance(end, count);
 
-    metric.start();
-
     std::vector<Point> pin_positions;
     for(auto net_it = begin; net_it != end; ++net_it)
     {
+        std::vector<Node*> path;
         auto net = *net_it;
         auto pins = net.pins();
         pin_positions.clear();
@@ -205,6 +204,7 @@ void A_star_object_oriented_design_parallel_graphOOD(design::Design &design, Met
         }
     }
 
+    metric.start();
 
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
@@ -220,20 +220,20 @@ void A_star_object_oriented_design_parallel_graphOOD(design::Design &design, Met
 //    lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node*> path;
 
 
     int count = m_nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = m_nets.begin();
     auto end = m_nets.begin();
     std::advance(end, count);
 
-    metric.start();
 
     std::vector<Point> pin_positions;
-    for(auto net_it = begin; net_it != end; ++net_it)
+    #pragma omp parallel for
+    for(auto net_it = begin; net_it < end; ++net_it)
     {
+        std::vector<Node*> path;
         auto net = *net_it;
         auto pins = net.pins();
         pin_positions.clear();
@@ -307,6 +307,7 @@ void A_star_object_oriented_design_sequential_lemon(design::Design &design, Metr
         }
     }
 
+    metric.start();
 
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
@@ -322,20 +323,19 @@ void A_star_object_oriented_design_sequential_lemon(design::Design &design, Metr
 //    lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node> path;
 
 
     int count = m_nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = m_nets.begin();
     auto end = m_nets.begin();
     std::advance(end, count);
 
-    metric.start();
 
     std::vector<Point> pin_positions;
     for(auto net_it = begin; net_it != end; ++net_it)
     {
+        std::vector<Node> path;
         auto net = *net_it;
         auto pins = net.pins();
         pin_positions.clear();
@@ -406,6 +406,7 @@ void A_star_object_oriented_design_parallel_lemon(design::Design &design, Metric
         }
     }
 
+    metric.start();
 
     //construindo o grafo de circuito
     ophidian::util::LocationDbu m_chip_Origin = design.floorplan().chipOrigin();
@@ -421,20 +422,20 @@ void A_star_object_oriented_design_parallel_lemon(design::Design &design, Metric
 //    lemon::GridGraph graph = astar.getGraph();
 
     Flute & flute = Flute::instance();
-    std::vector<Node> path;
 
 
     int count = m_nets.size() * NET_PERCENTAGE;
-
+//    std::cout<< "# nets = " << count << std::endl;
     auto begin = m_nets.begin();
     auto end = m_nets.begin();
     std::advance(end, count);
 
-    metric.start();
 
     std::vector<Point> pin_positions;
-    for(auto net_it = begin; net_it != end; ++net_it)
+    #pragma omp parallel for
+    for(auto net_it = begin; net_it < end; ++net_it)
     {
+        std::vector<Node> path;
         auto net = *net_it;
         auto pins = net.pins();
         pin_positions.clear();

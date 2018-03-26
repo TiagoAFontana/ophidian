@@ -82,7 +82,7 @@ TEST_CASE("Test A* OOD", "[astarOOD]")
     int rows = 7;
     int capacity = 2;
     A_star_OOD astar(cols, rows, capacity);
-
+    auto graph = astar.graph;
     //blocs
 //    std::vector<std::pair<int, int> > blocks;
 //    blocks.push_back(std::make_pair(1,3));
@@ -129,21 +129,23 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential OOD runtime", "
     std::cout << "Test A* sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-    if(GRAPH_OOD){
+//    if(GRAPH_OOD){
+//        a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
+//    }else{
+//        a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
+//    }
+//    for (int i = 0; i < ITERATIONS; ++i)
+//    {
+    if(GRAPH_OOD)
+    {
         a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
-    }else{
+    }
+    else {
         a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
     }
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        if(GRAPH_OOD){
-            a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
-        }else{
-            a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
-        }
-        runtime->print_result();
-        runtime->print_file_result(Experiment::getInstance().getOutput_file());
-    }
+    runtime->print_result();
+    runtime->print_file_result(Experiment::getInstance().getOutput_file());
+//    }
 }
 
 // ***********************************************************
@@ -168,16 +170,20 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential OOD miss", "[pr
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    if(GRAPH_OOD){
+    if(GRAPH_OOD)
+    {
         a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *miss);
-    }else{
+    }
+    else {
         a_star::A_star_object_oriented_design_sequential_lemon(*design_, *miss);
     }
     for (int i = 0; i < ITERATIONS; ++i)
     {
-        if(GRAPH_OOD){
+        if(GRAPH_OOD)
+        {
             a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *miss);
-        }else{
+        }
+        else {
             a_star::A_star_object_oriented_design_sequential_lemon(*design_, *miss);
         }
         miss->print_result();
@@ -197,16 +203,20 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel OOD runtime", "[p
     std::cout << "Test A* parallel OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-    if(GRAPH_OOD){
+    if(GRAPH_OOD)
+    {
         a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *runtime);
-    }else{
+    }
+    else {
         a_star::A_star_object_oriented_design_parallel_lemon(*design_, *runtime);
     }
     for (int i = 0; i < ITERATIONS; ++i)
     {
-        if(GRAPH_OOD){
+        if(GRAPH_OOD)
+        {
             a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *runtime);
-        }else{
+        }
+        else {
             a_star::A_star_object_oriented_design_parallel_lemon(*design_, *runtime);
         }
         runtime->print_result();
@@ -236,16 +246,20 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel OOD miss", "[prob
     };//Please change this according with your cpu architecture.
     std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
 
-    if(GRAPH_OOD){
+    if(GRAPH_OOD)
+    {
         a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *miss);
-    }else{
+    }
+    else {
         a_star::A_star_object_oriented_design_parallel_lemon(*design_, *miss);
     }
     for (int i = 0; i < ITERATIONS; ++i)
     {
-        if(GRAPH_OOD){
+        if(GRAPH_OOD)
+        {
             a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *miss);
-        }else{
+        }
+        else {
             a_star::A_star_object_oriented_design_parallel_lemon(*design_, *miss);
         }
         miss->print_result();

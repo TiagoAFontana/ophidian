@@ -47,6 +47,19 @@ Grid_graph_OOD::Grid_graph_OOD(int cols, int rows, int edgeCapacity) : m_rows(ro
     }
 }
 
+void Grid_graph_OOD::clearNodes()
+{
+    for (int j = 0; j < m_rows; ++j)
+    {
+        for (int i = 0; i < m_cols; ++i)
+        {
+            m_nodes[i][j].closedSet(false);
+            m_nodes[i][j].GScore(std::numeric_limits<int>::max());
+            m_nodes[i][j].FScore(std::numeric_limits<int>::max());
+        }
+    }
+}
+
 void Grid_graph_OOD::print()
 {
     for (int i = 0; i < m_cols; ++i)
@@ -147,6 +160,17 @@ int Node::FScore() const
 void Node::FScore(int value)
 {
     m_fScore = value;
+}
+
+void Node::clearNeighbors()
+{
+    for(Edge e : m_edges)
+    {
+        Node * n = e.target();
+        n->closedSet(false);
+        n->GScore(std::numeric_limits<int>::max());
+        n->FScore(std::numeric_limits<int>::max());
+    }
 }
 
 std::vector<Edge> Node::edges() const

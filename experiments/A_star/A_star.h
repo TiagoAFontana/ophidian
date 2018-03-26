@@ -3,6 +3,7 @@
 
 #include <lemon/grid_graph.h>
 #include "Grid_graph_OOD.h"
+#include <queue>
 
 namespace ophidian
 {
@@ -11,6 +12,7 @@ namespace experiments
 namespace a_star
 {
 
+#define NET_PERCENTAGE 1
 
 class A_star
 {
@@ -25,12 +27,13 @@ public:
     void updateGraph(std::vector<lemon::GridGraph::Node> &path);
     void insertBlock(std::vector<std::pair<int, int> > &blocks);
 private:
-
-
-
-
     lemon::GridGraph graph;
+
+    lemon::GridGraph::NodeMap<lemon::GridGraph::Node> cameFrom;
     lemon::GridGraph::EdgeMap<int> edgeCapacity;
+    lemon::GridGraph::NodeMap<bool> closedSet;
+    lemon::GridGraph::NodeMap<int> gScore;
+    lemon::GridGraph::NodeMap<int> fScore;
 };
 
 
@@ -43,6 +46,7 @@ public:
 
     void updateGraph(std::vector<ophidian::experiments::a_star::Node> &path);
     void insertBlock(std::vector<std::pair<int, int> > &blocks);
+
 
     ophidian::experiments::a_star::Grid_graph_OOD graph;
 };

@@ -1,6 +1,7 @@
 #ifndef GRID_GRAPH_OOD_H
 #define GRID_GRAPH_OOD_H
 #include <vector>
+#include <limits>
 namespace ophidian
 {
 namespace experiments
@@ -12,22 +13,49 @@ class Edge;
 class Node
 {
 public:
-    Node(){
+    Node(): m_closedSet(false), m_gScore(std::numeric_limits<int>::max()), m_fScore(std::numeric_limits<int>::max()){
         m_edges.reserve(4);
     }
 
+    bool operator ==(Node & node) const {
+        return (m_x == node.x()) && (m_y == node.y());
+    }
+
+    bool operator !=(Node & node) const {
+        return (m_x != node.x()) || (m_y != node.y());
+    }
+
+    std::vector<Edge> edges() const;
     void set_edge(Node *target, int capacity);
-    std::vector<Edge> & edges() const;
 
     int x() const;
     int y() const;
-    void setPosition(int x, int y);
+    void position(int x, int y);
     void printEdges();
+
+    bool closedSet() const;
+    void closedSet(bool value);
+
+    Node *cameFrom() const;
+    void cameFrom(Node *value);
+
+    int GScore() const;
+    void GScore(int value);
+
+    int FScore() const;
+    void FScore(int value);
+
 
 private:
     std::vector<Edge> m_edges;
     int m_x;
     int m_y;
+
+    //A_star_variables
+    bool m_closedSet;
+    Node * m_cameFrom;
+    int m_gScore;
+    int m_fScore;
 };
 
 class Edge
@@ -41,7 +69,7 @@ public:
     Node *source() const;
     Node *target() const;
     int capacity() const;
-    void setCapacity(int capacity);
+    void capacity(int capacity);
 
 private:
     Node * m_source;
@@ -53,6 +81,10 @@ class Grid_graph_OOD
 {
 public:
     Grid_graph_OOD(int cols, int rows, int edgeCapacity);
+
+    Node * operator()(int i, int j){
+        return &m_nodes[i][j];
+    }
 
     void print();
 private:

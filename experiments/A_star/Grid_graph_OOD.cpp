@@ -23,7 +23,7 @@ Grid_graph_OOD::Grid_graph_OOD(int cols, int rows, int edgeCapacity) : m_rows(ro
         {
             Node node;
             m_nodes[i][j] = node;
-            m_nodes[i][j].setPosition(i,j);
+            m_nodes[i][j].position(i,j);
         }
     }
 
@@ -73,7 +73,7 @@ int Edge::capacity() const
     return m_capacity;
 }
 
-void Edge::setCapacity(int capacity)
+void Edge::capacity(int capacity)
 {
     m_capacity = capacity;
 }
@@ -94,7 +94,7 @@ int Node::y() const
     return m_y;
 }
 
-void Node::setPosition(int x, int y)
+void Node::position(int x, int y)
 {
     m_x = x;
     m_y = y;
@@ -107,6 +107,51 @@ void Node::printEdges()
         Node * target = edge.target();
         std::cout << "("<< m_x << ", "<< m_y <<") -> (" << target->x() << ", " << target->y() << ") cap = " << edge.capacity() << std::endl;
     }
+}
+
+bool Node::closedSet() const
+{
+    return m_closedSet;
+}
+
+void Node::closedSet(bool value)
+{
+    m_closedSet = value;
+}
+
+Node *Node::cameFrom() const
+{
+    return m_cameFrom;
+}
+
+void Node::cameFrom(Node *value)
+{
+    m_cameFrom = value;
+}
+
+int Node::GScore() const
+{
+    return m_gScore;
+}
+
+void Node::GScore(int value)
+{
+    m_gScore = value;
+}
+
+int Node::FScore() const
+{
+    return m_fScore;
+}
+
+void Node::FScore(int value)
+{
+    m_fScore = value;
+}
+
+std::vector<Edge> Node::edges() const
+{
+    return m_edges;
 }
 
 

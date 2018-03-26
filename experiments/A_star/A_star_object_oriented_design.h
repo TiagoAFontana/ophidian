@@ -44,9 +44,11 @@ public:
     const ophidian::geometry::Point & pin_position();
 };
 
+void A_star_object_oriented_design_sequential_graphOOD(design::Design &design, Metric &metric);
+void A_star_object_oriented_design_parallel_graphOOD(design::Design &design, Metric &metric);
 
-void A_star_object_oriented_design_sequential(design::Design &design, Metric &metric);
-void A_star_object_oriented_design_parallel(design::Design &design, Metric &metric);
+void A_star_object_oriented_design_sequential_lemon(design::Design &design, Metric &metric);
+void A_star_object_oriented_design_parallel_lemon(design::Design &design, Metric &metric);
 
 } // namespace a_star
 } // namespace experiments

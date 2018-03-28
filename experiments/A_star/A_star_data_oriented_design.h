@@ -12,7 +12,6 @@ namespace a_star
 {
 
 void A_star_data_oriented_design_sequential(ophidian::design::Design &design, Metric &metric);
-void A_star_data_oriented_design_parallel(ophidian::design::Design &design, Metric &metric);
 
 } // namespace a_star
 } // namespace experiments

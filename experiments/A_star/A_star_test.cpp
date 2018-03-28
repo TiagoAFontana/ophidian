@@ -6,6 +6,7 @@
 #include "A_star_data_oriented_design.h"
 #include "A_star_object_oriented_design.h"
 #include <lemon/grid_graph.h>
+#include "Grid_graph_OOD.h"
 
 // PAPI_L1_DCM /*Level 1 data cache misses */
 // PAPI_L1_ICM /*Level 1 instruction cache misses */
@@ -21,7 +22,7 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::a_star;
 
-#define ITERATIONS 1
+#define ITERATIONS 30
 #define GRAPH_OOD 1
 
 TEST_CASE("Test A*", "[astar]")
@@ -63,16 +64,11 @@ TEST_CASE("Test A*", "[astar]")
     {
         std::printf("Nodo : col: %d row: %d \n", graph.col(node), graph.row(node));
     }
-
 }
 
 
-#include "Grid_graph_OOD.h"
-TEST_CASE("Test Grid_graph A*", "[gg]")
-{
-    Grid_graph_OOD gg(3,5,8);
-    gg.print();
-}
+
+
 
 TEST_CASE("Test A* OOD", "[astarOOD]")
 {
@@ -129,13 +125,6 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential OOD runtime", "
     std::cout << "Test A* sequential OOD runtime" << std::endl;
     std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
 
-//    if(GRAPH_OOD){
-//        a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
-//    }else{
-//        a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
-//    }
-//    for (int i = 0; i < ITERATIONS; ++i)
-//    {
     if(GRAPH_OOD)
     {
         a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
@@ -143,9 +132,18 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential OOD runtime", "
     else {
         a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
     }
-    runtime->print_result();
-    runtime->print_file_result(Experiment::getInstance().getOutput_file());
-//    }
+    for (int i = 0; i < ITERATIONS; ++i)
+    {
+        if(GRAPH_OOD)
+        {
+            a_star::A_star_object_oriented_design_sequential_graphOOD(*design_, *runtime);
+        }
+        else {
+            a_star::A_star_object_oriented_design_sequential_lemon(*design_, *runtime);
+        }
+        runtime->print_result();
+        runtime->print_file_result(Experiment::getInstance().getOutput_file());
+    }
 }
 
 // ***********************************************************
@@ -192,83 +190,7 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential OOD miss", "[pr
 }
 
 
-// ***********************************************************
-//  Object-Oriented Design
-// ***********************************************************
-//  -- parallel
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel OOD runtime", "[problem4][OOD][parallel][runtime]")
-{
-    std::cout << "Test A* parallel OOD runtime" << std::endl;
-    std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-
-    if(GRAPH_OOD)
-    {
-        a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *runtime);
-    }
-    else {
-        a_star::A_star_object_oriented_design_parallel_lemon(*design_, *runtime);
-    }
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        if(GRAPH_OOD)
-        {
-            a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *runtime);
-        }
-        else {
-            a_star::A_star_object_oriented_design_parallel_lemon(*design_, *runtime);
-        }
-        runtime->print_result();
-        runtime->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
-
-// ***********************************************************
-//  Object-Oriented Design
-// ***********************************************************
-//  -- parallel
-//      -- cache miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel OOD miss", "[problem4][OOD][parallel][miss]")
-{
-    std::cout << "Test A* sequential OOD miss" << std::endl;
-    int PAPI_events[] = {
-        PAPI_L1_DCM,
-        PAPI_L1_ICM,
-        PAPI_L1_TCM,
-
-        PAPI_L2_DCM,
-        PAPI_L2_ICM,
-        PAPI_L2_TCM,
-
-        PAPI_L3_TCM
-    };//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-
-    if(GRAPH_OOD)
-    {
-        a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *miss);
-    }
-    else {
-        a_star::A_star_object_oriented_design_parallel_lemon(*design_, *miss);
-    }
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        if(GRAPH_OOD)
-        {
-            a_star::A_star_object_oriented_design_parallel_graphOOD(*design_, *miss);
-        }
-        else {
-            a_star::A_star_object_oriented_design_parallel_lemon(*design_, *miss);
-        }
-        miss->print_result();
-        miss->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
-
 //________________________________________________________________________________________________________________________________
-
 
 // ***********************************************************
 //  Data-Oriented Design
@@ -321,58 +243,6 @@ TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* sequential DOD miss", "[pr
     }
 }
 
-
-
-// ***********************************************************
-//  Data-Oriented Design
-// ***********************************************************
-//  -- parallel
-//      -- runtime
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel DOD runtime", "[problem4][DOD][parallel][runtime]")
-{
-    std::cout << "Test A* parallel DOD runtime" << std::endl;
-    std::unique_ptr<Runtime> runtime = std::unique_ptr<Runtime>(new Runtime());
-
-    a_star::A_star_data_oriented_design_parallel(*design_, *runtime);
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        a_star::A_star_data_oriented_design_parallel(*design_, *runtime);
-        runtime->print_result();
-        runtime->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
-
-// ***********************************************************
-//  Data-Oriented Design
-// ***********************************************************
-//  -- parallel
-//      -- cache miss
-// ***********************************************************
-TEST_CASE_METHOD(ExperimentFixtureICCAD2015, "Test A* parallel DOD miss", "[problem4][DOD][parallel][miss]")
-{
-    std::cout << "Test A* parallel DOD runtime" << std::endl;
-    int PAPI_events[] = {
-        PAPI_L1_DCM,
-        PAPI_L1_ICM,
-        PAPI_L1_TCM,
-
-        PAPI_L2_DCM,
-        PAPI_L2_ICM,
-        PAPI_L2_TCM,
-
-        PAPI_L3_TCM
-    };//Please change this according with your cpu architecture.
-    std::unique_ptr<Miss> miss = std::unique_ptr<Miss>(new Miss(PAPI_events, 7));
-
-    a_star::A_star_data_oriented_design_parallel(*design_, *miss);
-    for (int i = 0; i < ITERATIONS; ++i)
-    {
-        a_star::A_star_data_oriented_design_parallel(*design_, *miss);
-        miss->print_result();
-        miss->print_file_result(Experiment::getInstance().getOutput_file());
-    }
-}
 
 
 

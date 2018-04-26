@@ -36,7 +36,7 @@ using namespace ophidian;
 using namespace ophidian::experiments;
 using namespace ophidian::experiments::chip_boundaries;
 
-#define ITERATIONS 5
+#define ITERATIONS 30
 
 TEST_CASE("papi", "[PAPI]")
 {

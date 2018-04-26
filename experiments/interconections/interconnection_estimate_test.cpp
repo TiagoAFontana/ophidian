@@ -16,7 +16,7 @@
 
 //interconnection_estimate
 
-#define ITERATIONS 5
+#define ITERATIONS 30
 
 using namespace ophidian;
 using namespace ophidian::experiments;
